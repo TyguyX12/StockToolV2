@@ -1,0 +1,10 @@
+numpy
+pandas
+pandas-datareader
+sklearn
+tensorflow
+nltk
+mysql-connector-python
+praw
+matplotlib
+squarify
