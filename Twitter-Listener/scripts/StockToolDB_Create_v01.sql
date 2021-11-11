@@ -14,6 +14,8 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,N
 --
 -- This database holds the data for the Stock Tool project for Advance Software ENgineering Spring 2021 section 1
 -- -----------------------------------------------------
+-- THIS CODE IS LIKELY OBSOLETE. StockToolDB_Create IN DB REPO IS LIKELY THE NEW FILE
+
 CREATE SCHEMA IF NOT EXISTS `StockToolDB` DEFAULT CHARACTER SET utf8 COLLATE utf8_bin ;
 USE `StockToolDB` ;
 
