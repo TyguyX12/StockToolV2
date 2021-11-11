@@ -9,6 +9,7 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Dropout, LSTM
 
 #Load Data
+#NOT CURRENTLY IN USE - IMPLEMENT FOR ML
 
 company = 'RIOT'
 start = dt.datetime(2012, 1, 1)
