@@ -170,7 +170,7 @@ class TwitterSentiment(object):
 
     
     def process_twitter_sentiment(self):
-        #WRITE METHOD TO GET SCORES AND STORE THEM WITH insert_processed_sentiment_score(conn, asset, score)
+        #WRITE METHOD TO GET SCORES AND STORE THEM WITH insert_processed_sentiment_score(conn, asset, score, sentiment_type)
 
 
 ###UNIT TESTS
