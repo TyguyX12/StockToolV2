@@ -53,4 +53,83 @@ def insert_sentiment_scores(conn, scores, source, sentiment_type):
     cursor.close()
     conn.commit()
 
-        
+
+def insert_processed_sentiment_score(conn, asset, score):
+    '''
+    Inserts processed sentiment scores into processedsentimentdata table
+    '''
+	
+	IF EXISTS
+	(
+		sql = """SELECT * FROM processedsentimentdata WHERE asset = %s"""
+		cursor.execute(sql, asset))
+	)
+	BEGIN
+		sql = """UPDATE processedsentimentdata SET dailyscore = $s WHERE asset = $s;"""
+		processed_sentiment_data = (score, asset)
+	END
+	ELSE
+	BEGIN
+		sql = """INSERT INTO processedsentimentdata (asset, dailyscore, weeklyscore, monthlyscore) VALUES (%s, %s, %s, %s)"""
+		processed_sentiment_data = (asset, score, score, score)
+	END
+	cursor = conn.cursor()
+	cursor.execute(sql, processedsentiment_data)
+	cursor.close()
+	conn.commit()   
+
+
+def update_weekly_score(conn, asset, score):
+    '''
+    Updates weekly processed sentiment scores in processedsentimentdata table
+    '''
+	weeklyScore = 0;
+	IF EXISTS
+	(
+		sql = """SELECT weeklyscore FROM processedsentimentdata WHERE asset = %s"""
+		cursor.execute(sql, asset))
+		weeklyScore = cursor
+		newWeeklyScore = ((6/7) * weeklyScore) + ((1/7) * score)
+	)
+	BEGIN
+		sql = """UPDATE processedsentimentdata SET weeklyscore = $s WHERE asset = $s;"""
+		processed_sentiment_data = (newWeeklyScore, asset)
+	END
+	ELSE
+	BEGIN
+		sql = """UPDATE processedsentimentdata SET weeklyscore = $s WHERE asset = $s;"""
+		processed_sentiment_data = (score, asset)
+	END
+	
+	cursor = conn.cursor()
+	cursor.execute(sql, processedsentiment_data)
+	cursor.close()
+	conn.commit()
+	
+	def update_monthly_score(conn, asset, score):
+    '''
+    Updates monthly processed sentiment scores in processedsentimentdata table
+    '''
+	monthlyScore = 0;
+	IF EXISTS
+	(
+		sql = """SELECT monthlyscore FROM processedsentimentdata WHERE asset = %s"""
+		cursor.execute(sql, asset))
+		monthlyScore = cursor
+		newMonthlyScore = ((1/28) * monthlyScore) + ((1/28) * score)
+	)
+	BEGIN
+		sql = """UPDATE processedsentimentdata SET monthlyscore = $s WHERE asset = $s;"""
+		processed_sentiment_data = (newMonthlyScore, asset)
+	END
+	ELSE
+	BEGIN
+		sql = """UPDATE processedsentimentdata SET monthlyscore = $s WHERE asset = $s;"""
+		processed_sentiment_data = (score, asset)
+	END
+	
+	cursor = conn.cursor()
+	cursor.execute(sql, processedsentiment_data)
+	cursor.close()
+	conn.commit()
+	   	
