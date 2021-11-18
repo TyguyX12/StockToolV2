@@ -19,3 +19,22 @@ LOCK TABLES `sentimentdata` WRITE;
 /*!40000 ALTER TABLE `sentimentdata` DISABLE KEYS */;
 /*!40000 ALTER TABLE `sentimentdata` ENABLE KEYS */;
 UNLOCK TABLES;
+
+
+CREATE TABLE `processedsentimentdata` (
+  `asset` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `daily_score` int,
+  `weekly_score` int,
+  `monthly_score` int,
+  PRIMARY KEY (`asset`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `processedsentimentdata`
+--
+
+LOCK TABLES `processedsentimentdata` WRITE;
+/*!40000 ALTER TABLE `processedsentimentdata` DISABLE KEYS */;
+/*!40000 ALTER TABLE `processedsentimentdata` ENABLE KEYS */;
+UNLOCK TABLES;
