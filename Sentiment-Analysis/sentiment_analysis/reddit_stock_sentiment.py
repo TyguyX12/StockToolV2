@@ -179,4 +179,4 @@ class RedditSentiment(object):
         print("Finished analyzing reddit sentiment")
         
     def process_reddit_sentiment(self):
-        #WRITE METHOD TO GET SCORES AND STORE THEM WITH insert_processed_sentiment_score(conn, asset, score)
+        #WRITE METHOD TO GET SCORES AND STORE THEM WITH insert_processed_sentiment_score(conn, asset, score, sentiment_type)
