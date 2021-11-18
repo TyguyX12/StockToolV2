@@ -23,7 +23,9 @@ UNLOCK TABLES;
 
 CREATE TABLE `processedsentimentdata` (
   `asset` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
-  `daily_score` int,
+  `daily_twitter_score` int,
+  `daily_reddit_score` int,
+  `daily_cumulative_score` int,
   `weekly_score` int,
   `monthly_score` int,
   PRIMARY KEY (`asset`)
