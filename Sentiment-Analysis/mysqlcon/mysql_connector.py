@@ -54,24 +54,32 @@ def insert_sentiment_scores(conn, scores, source, sentiment_type):
     conn.commit()
 
 
-def insert_processed_sentiment_score(conn, asset, score):
+def insert_processed_sentiment_score(conn, asset, score, sentiment_type):
     '''
     Inserts processed sentiment scores into processedsentimentdata table
     '''
 	
+	''' IF THERE EXISTS A PROCESSED SENTIMENT SCORE WITH THE NAME OF A GIVEN ASSET, UPDATE RELEVENT SCORE'''
 	IF EXISTS
 	(
 		sql = """SELECT * FROM processedsentimentdata WHERE asset = %s"""
 		cursor.execute(sql, asset))
 	)
 	BEGIN
-		sql = """UPDATE processedsentimentdata SET dailyscore = $s WHERE asset = $s;"""
+		CASE
+			WHEN sentiment_type = 'twitter' THEN """UPDATE processedsentimentdata SET daily_twitter_score = $s WHERE asset = $s;"""
+			WHEN sentiment_type = 'reddit' THEN """UPDATE processedsentimentdata SET daily_reddit_score = $s WHERE asset = $s;"""
+		END AS sql
 		processed_sentiment_data = (score, asset)
 	END
+	''' IF THERE DOES NOT EXIST A PROCESSED SENTIMENT SCORE WITH THE NAME OF A GIVEN ASSET, AN ENTRY IS MADE IN THE PROCESSEDSENTIMENT SCORE TABLE '''
 	ELSE
 	BEGIN
-		sql = """INSERT INTO processedsentimentdata (asset, dailyscore, weeklyscore, monthlyscore) VALUES (%s, %s, %s, %s)"""
-		processed_sentiment_data = (asset, score, score, score)
+		CASE
+			WHEN sentiment_type = 'twitter' THEN """INSERT INTO processedsentimentdata (asset, daily_twitter_score, daily_reddit_score, daily_cumulative_score, weekly_score, monthly_score) VALUES (%s, %s, NULL, %s, %s, %s)"""
+			WHEN sentiment_type = 'reddit' THEN """INSERT INTO processedsentimentdata (asset, daily_twitter_score, daily_reddit_score, daily_cumulative_score, weekly_score, monthly_score) VALUES (%s, NULL, %s, %s, %s, %s)"""
+		END AS sql
+		processed_sentiment_data = (asset, score, score, score, score)
 	END
 	cursor = conn.cursor()
 	cursor.execute(sql, processedsentiment_data)
@@ -79,57 +87,79 @@ def insert_processed_sentiment_score(conn, asset, score):
 	conn.commit()   
 
 
-def update_weekly_score(conn, asset, score):
-    '''
-    Updates weekly processed sentiment scores in processedsentimentdata table
-    '''
+def update_daily_cumulative_scores(conn, asset):
+	BOOLEAN reddit, twitter
+	INTEGER cumulativeScore = 0
+	IF EXISTS
+	(
+		sql = """SELECT daily_reddit_score FROM processedsentimentdata WHERE asset = %s"""
+		cursor = conn.cursor()
+		cursor.execute(sql, asset)
+	)	
+	BEGIN
+		cumulativeScore += cursor
+		reddit = TRUE
+	END
+	IF EXISTS
+	(
+		sql = """SELECT daily_twitter_score FROM processedsentimentdata WHERE asset = %s"""
+		cursor = conn.cursor()
+		cursor.execute(sql, asset)
+	)	
+	BEGIN
+		cumulativeScore += cursor
+		twitter = TRUE
+	END
+	
+	CASE
+		WHEN reddit = true AND twitter = true THEN cumulativeScore / 2
+		WHEN reddit = false AND twitter = false THEN 0
+		ELSE 0
+	END AS cumulativeScore
+	
+	sql = """UPDATE processedsentimentdata SET daily_cumulative_score = $s WHERE asset = $s;"""
+	cursor = conn.cursor()
+	cursor.execute(sql, cumulativeScore)
+	
+	cursor.close()
+	conn.commit()
+
+
+def update_weekly_monthly_scores(conn, asset):
+	
+	''' 
+	Updates weekly processed sentiment scores in processedsentimentdata table
+	'''
 	weeklyScore = 0;
-	IF EXISTS
-	(
-		sql = """SELECT weeklyscore FROM processedsentimentdata WHERE asset = %s"""
-		cursor.execute(sql, asset))
-		weeklyScore = cursor
-		newWeeklyScore = ((6/7) * weeklyScore) + ((1/7) * score)
-	)
-	BEGIN
-		sql = """UPDATE processedsentimentdata SET weeklyscore = $s WHERE asset = $s;"""
-		processed_sentiment_data = (newWeeklyScore, asset)
-	END
-	ELSE
-	BEGIN
-		sql = """UPDATE processedsentimentdata SET weeklyscore = $s WHERE asset = $s;"""
-		processed_sentiment_data = (score, asset)
-	END
 	
+	sql = """SELECT weekly_score FROM processedsentimentdata WHERE asset = %s"""
+	cursor.execute(sql, asset))
+	weeklyScore = cursor
+	newWeeklyScore = ((6/7) * weeklyScore) + ((1/7) * score)
+	
+	sql = """UPDATE processedsentimentdata SET weekly_score = $s WHERE asset = $s;"""
+	processed_sentiment_data = (newWeeklyScore, asset)
 	cursor = conn.cursor()
 	cursor.execute(sql, processedsentiment_data)
-	cursor.close()
-	conn.commit()
 	
-	def update_monthly_score(conn, asset, score):
-    '''
-    Updates monthly processed sentiment scores in processedsentimentdata table
-    '''
+	
+	'''
+	Updates monthly processed sentiment scores in processedsentimentdata table
+	'''
 	monthlyScore = 0;
-	IF EXISTS
-	(
-		sql = """SELECT monthlyscore FROM processedsentimentdata WHERE asset = %s"""
-		cursor.execute(sql, asset))
-		monthlyScore = cursor
-		newMonthlyScore = ((1/28) * monthlyScore) + ((1/28) * score)
-	)
-	BEGIN
-		sql = """UPDATE processedsentimentdata SET monthlyscore = $s WHERE asset = $s;"""
-		processed_sentiment_data = (newMonthlyScore, asset)
-	END
-	ELSE
-	BEGIN
-		sql = """UPDATE processedsentimentdata SET monthlyscore = $s WHERE asset = $s;"""
-		processed_sentiment_data = (score, asset)
-	END
 	
+	sql = """SELECT monthly_score FROM processedsentimentdata WHERE asset = %s"""
+	cursor.execute(sql, asset))
+	monthlyScore = cursor
+	newMonthlyScore = ((27/28) * monthlyScore) + ((1/28) * score)
+	
+	sql = """UPDATE processedsentimentdata SET monthly_score = $s WHERE asset = $s;"""
+	processed_sentiment_data = (newMonthlyScore, asset)
 	cursor = conn.cursor()
 	cursor.execute(sql, processedsentiment_data)
+	
+	
 	cursor.close()
 	conn.commit()
-	   	
+
+	
