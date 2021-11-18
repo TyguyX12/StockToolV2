@@ -168,10 +168,8 @@ class TwitterSentiment(object):
         insert_sentiment_scores(CONNECTION, scores, 'twitter', sentiment_type)
         #self.display_results(scores)
 
-    
-    def process_twitter_sentiment(self):
-        #WRITE METHOD TO GET SCORES AND STORE THEM WITH insert_processed_sentiment_score(conn, asset, score, sentiment_type)
-
+        #FIND A WAY TO INSERT_PROCESSED_SCORE WITH ASSET NAME & SCORE
+        #insert_processed_sentiment_score(CONNECTION, asset, score, 'twitter')
 
 ###UNIT TESTS
 if __name__ == '__main__':
