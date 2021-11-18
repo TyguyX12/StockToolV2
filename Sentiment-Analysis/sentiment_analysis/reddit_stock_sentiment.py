@@ -178,5 +178,11 @@ class RedditSentiment(object):
         insert_sentiment_scores(CONNECTION, scores, 'reddit', 'hourly')
         print("Finished analyzing reddit sentiment")
         
-    def process_reddit_sentiment(self):
-        #WRITE METHOD TO GET SCORES AND STORE THEM WITH insert_processed_sentiment_score(conn, asset, score, sentiment_type)
+    def run_reddit_sentiment(self):
+        symbols, a_comments, top_picks = self.process_reddit_comments_posts()
+        scores = self.analyze_sentiment(symbols, a_comments, top_picks)
+        insert_sentiment_scores(CONNECTION, scores, 'reddit', 'hourly')
+        print("Finished analyzing reddit sentiment")
+        
+        #FIND A WAY TO INSERT_PROCESSED_SCORE WITH ASSET NAME & SCORE
+        #insert_processed_sentiment_score(CONNECTION, asset, score, 'reddit')
