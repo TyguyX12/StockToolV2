@@ -22,6 +22,7 @@ if __name__ == '__main__':
 #   Twitter and Reddit posts for that day. This score is saved in the sentimentdata table and includes:
 
 #       `id`                (PRIMARY KEY)
+#       `source`            (TWITTER OR REDDIT)
 #       `asset`             (STOCK NAME)
 #       `score_neg`         (AVERAGE NEGATIVE SCORES FOR DAY)
 #       `score_neu`         (AVERAGE NEUTRAL SCORES FOR DAY)
