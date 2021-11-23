@@ -3,6 +3,7 @@ DROP TABLE IF EXISTS `sentimentdata`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `sentimentdata` (
   `id` int NOT NULL AUTO_INCREMENT,
+  `source` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
   `asset` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
   `score_neg` int,
   `score_neu` int,
