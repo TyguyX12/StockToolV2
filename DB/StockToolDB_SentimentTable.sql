@@ -4,9 +4,12 @@ DROP TABLE IF EXISTS `sentimentdata`;
 CREATE TABLE `sentimentdata` (
   `id` int NOT NULL AUTO_INCREMENT,
   `asset` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
-  `daily_twitter_score` int,
-  `daily_reddit_score` int,
-  `daily_cumulative_score` int,
+  `score_neg` int,
+  `score_neu` int,
+  `score_pos` int,
+  `num_neg` int,
+  `num_neu` int,
+  `num_pos` int,
   `date` datetime NOT NULL DEFAULT CAST(GETDATE() AS Date),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
