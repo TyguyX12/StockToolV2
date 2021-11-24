@@ -108,7 +108,7 @@ class TwitterSentiment(object):
         for stock in picks_sentiment:                                               #   RENAMED SYMBOL TO STOCK
             tweetsForStock = TweetTexts[stock]                                      #   RENAMED stock_comments TO tweetsForStock FOR CLARITY
             for tweet in tweetsForStock:                                            #   RENAMED comment TO tweet FOR CLARITY
-                tweetscore = self.vader.polarity_scores(tweet)                      #   RENAMED score to tweetScore FOR CLARITY. tweetScore = neg, neu, pos, and compound scores for a given stock
+                tweetScore = self.vader.polarity_scores(tweet)                      #   RENAMED score to tweetScore FOR CLARITY. tweetScore = neg, neu, pos, and compound scores for a given stock
                 
                 if stock in TweetScores:                                            #   Adds score to TweetScores at index tweet if a Tweet has been processed for it
                     TweetScores[stock][tweet] = tweetscore                                       
@@ -116,10 +116,10 @@ class TwitterSentiment(object):
                     TweetScores[stock] = {tweet:tweetscore}
                 
                 if stock in CumulativeScores:                                       #   Adds score to CumulativeScores at if a Tweet has been processed for it
-                    for sentimentType, _ in score.items():                          #   RENAMED key TO sentimentType (neg, neu, pos) FOR CLARITY.
-                        CumulativeScores[stock][sentimentType] += score[key]
+                    for sentimentType, _ in tweetScore.items():                     #   RENAMED key TO sentimentType (neg, neu, pos) FOR CLARITY.
+                        CumulativeScores[stock][sentimentType] += tweetScore[sentimentType]
                 else:                                                               #   Initializes CumulativeScores if a Tweet has not yet been processed for it.
-                    CumulativeScores[stock] = tweetscore
+                    CumulativeScores[stock] = tweetScore
 
             for sentimentType in tweetScore:                                        #   Runs through all scores for a stock 
                 CumulativeScores[stock][sentimentType] = CumulativeScores[stock][sentimentType] / SortedCounts[stock]           #   The cumulative score for each type of sentiment (neg, neu, pos) is an average of all scores of that type. 
