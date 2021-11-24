@@ -26,20 +26,20 @@ class TwitterSentiment(object):
 
     #   RUN_FROM_DB:
     #   Calls method to pull tweets from the db for a given date
-    def run_from_db(self, date):                                                    #   REMOVED TYPE, ADDED DATE
-        SortedCounts, TweetTexts = self.process_tweets_from_db(date)                #   ADDED DATE. SortedCounts = list of stocks sorted by highest count
+    def run_from_db(self, date):                                                    #   REMOVED type, ADDED date
+        SortedCounts, TweetTexts = self.process_tweets_from_db(date)                #   ADDED date. SortedCounts = list of stocks sorted by highest count
                                                                                     #   SortedCounts is a dict with a stock name as it's keys and the no. of references as a value
                                                                                     #   TweetTexts is a dict with a stock name as it's keys and TweetTexts as values
         #print(self.process_tweets_from_db())
         scores = self.analyze_sentiment(SortedCounts, TweetTexts)                   #   Gather sentiment scores for all tweets & aggregate as scores
         
-        insert_sentiment_scores(CONNECTION, scores, 'twitter', date)                #   REMOVED TYPE, ADDED DATE. 
+        insert_sentiment_scores(CONNECTION, scores, 'twitter', date)                #   REMOVED type, ADDED date. 
         #self.display_results(scores)
 
     
     #   Calls tweets from the db for a given date
-    def process_tweets_from_db(self, date):                                         #   ADDED DATE, Tweets will be pulled for a given date for sentiment analysis
-        tweets = gather_tweets_from_db(CONNECTION, date)                            #   ADDED DATE
+    def process_tweets_from_db(self, date):                                         #   ADDED date, Tweets will be pulled for a given date for sentiment analysis
+        tweets = gather_tweets_from_db(CONNECTION, date)                            #   ADDED date
         TweetCount, TweetTexts = {}, {}                                             #   RENAMED tickers & comments TO TweetCount & TweetTexts FOR CLARITY.
                                                                                     #   TweetCount is a dict with a stock name as it's keys and the no. of references as a value
                                                                                     #   TweetTexts is a dict with a stock name as it's keys and TweetTexts as values. Returned by this function
@@ -99,9 +99,9 @@ class TwitterSentiment(object):
    
         print("Beginning sentiment analysis...")    
         
-        tweetscores, cumulativescores = {}, {}                                      #   RENAMED s TO tweetscores, scores TO cumulativescores 
-                                                                                    #   tweetscores contains all neg, neu, and pos sentiment for all of a stock's tweets.
-                                                                                    #   cumulativescores contains an average of all neg, neu, and pos sentiment for a stock.  
+        TweetScores, CumulativeScores = {}, {}                                      #   RENAMED s TO TweetScores, scores TO CumulativeScores 
+                                                                                    #   TweetScores contains all neg, neu, and pos sentiment for all of a stock's tweets.
+                                                                                    #   CumulativeScores contains an average of all neg, neu, and pos sentiment for a stock.  
                                                                                     
         
         picks_sentiment = list(SortedCounts.keys())[0:self.__top_picks]             #   SEEMS REDUNDANT, SAME AS self.top_picks?
@@ -110,22 +110,22 @@ class TwitterSentiment(object):
             for tweet in tweetsForStock:                                            #   RENAMED comment TO tweet FOR CLARITY
                 tweetscore = self.vader.polarity_scores(tweet)                      #   RENAMED score to tweetScore FOR CLARITY. tweetScore = neg, neu, pos, and compound scores for a given stock
                 
-                if stock in tweetscores:                                            #   Adds score to tweetscores at index tweet if a Tweet has been processed for it
-                    tweetscores[stock][tweet] = tweetscore                                       
-                else:                                                               #   Initializes tweetscores if a Tweet has not yet been processed for it.
-                    tweetscores[stock] = {tweet:tweetscore}
+                if stock in TweetScores:                                            #   Adds score to TweetScores at index tweet if a Tweet has been processed for it
+                    TweetScores[stock][tweet] = tweetscore                                       
+                else:                                                               #   Initializes TweetScores if a Tweet has not yet been processed for it.
+                    TweetScores[stock] = {tweet:tweetscore}
                 
-                if stock in cumulativescores:                                       #   Adds score to cumulativescores at if a Tweet has been processed for it
-                    for key, _ in score.items():
-                        cumulativescores[stock][key] += score[key]
-                else:                                                               #   Initializes cumulativescores if a Tweet has not yet been processed for it.
-                    cumulativescores[stock] = score
+                if stock in CumulativeScores:                                       #   Adds score to CumulativeScores at if a Tweet has been processed for it
+                    for sentimentType, _ in score.items():                          #   RENAMED key TO sentimentType (neg, neu, pos) FOR CLARITY.
+                        CumulativeScores[stock][sentimentType] += score[key]
+                else:                                                               #   Initializes CumulativeScores if a Tweet has not yet been processed for it.
+                    CumulativeScores[stock] = tweetscore
 
-            for sentimentType in tweetScore:                                        #   RENAMED key TO sentiment_type (neg, neu, pos) FOR CLARITY. Runs through all scores for a stock 
-                cumulativescores[stock][sentimentType] = cumulativescores[stock][sentimentType] / SortedCounts[stock]           #   The cumulative score for each type of sentiment (neg, neu, pos) is an average of all scores of that type. 
-                cumulativescores[stock][sentimentType] = "{pol:.3f}".format(pol=cumulativescores[stock][sentimentType])         #   Formats cumulativescores to 3 decimals
+            for sentimentType in tweetScore:                                        #   Runs through all scores for a stock 
+                CumulativeScores[stock][sentimentType] = CumulativeScores[stock][sentimentType] / SortedCounts[stock]           #   The cumulative score for each type of sentiment (neg, neu, pos) is an average of all scores of that type. 
+                CumulativeScores[stock][sentimentType] = "{pol:.3f}".format(pol=CumulativeScores[stock][sentimentType])         #   Formats CumulativeScores to 3 decimals
 
-        return cumulativescores
+        return CumulativeScores
 
     
 #    def display_results(self, scores):
