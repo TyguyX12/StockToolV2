@@ -108,7 +108,7 @@ class TwitterSentiment(object):
         for stock in picks_sentiment:                                               #   RENAMED SYMBOL TO STOCK
             tweetsForStock = TweetTexts[stock]                                      #   RENAMED stock_comments TO tweetsForStock FOR CLARITY
             for tweet in tweetsForStock:                                            #   RENAMED comment TO tweet FOR CLARITY
-                tweetScore = self.vader.polarity_scores(tweet)                      #   RENAMED score to tweetScore FOR CLARITY. tweetScore = neg, neu, pos, and compound scores for a given stock
+                tweetScore = self.vader.polarity_scores(tweet)                      #   RENAMED score to tweetScore FOR CLARITY. tweetScore = neg, neu, pos, and compound scores for a given tweet
                 
                 if stock in TweetScores:                                            #   Adds score to TweetScores at index tweet if a Tweet has been processed for it
                     TweetScores[stock][tweet] = tweetscore                                       
