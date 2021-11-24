@@ -46,143 +46,149 @@ class RedditSentiment(object):
         self.picks_ayz = 30   # define # of picks for sentiment analysis
 
 
+    def run_reddit_sentiment(self, date):                                                       #   ADDED date
+        SortedCounts, CommentTexts, top_picks = self.process_reddit_comments_posts(date)        #   Goes through hot Reddit posts and collects comments about stocks
+                                                                                                #   TODO, ONLY SEARCH FOR REDDIT POSTS FOR A GIVEN DATE
+        
+        scores = self.analyze_sentiment(SortedCounts, CommentTexts, top_picks)                  #   Goes through saved comment texts and generates scores
+        
+        insert_sentiment_scores(CONNECTION, scores, 'reddit', date)                             #   REMOVED type AND ADDED date
+        print("Finished analyzing reddit sentiment")
+        
+        
+        
     def process_reddit_comments_posts(self):
         start_time = time.time()
-        posts, count, c_analyzed, tickers, titles, a_comments = 0, 0, 0, {}, [], {}
-        cmt_auth = {}
-
-        for sub in self.subs:
-            subreddit = self.reddit.subreddit(sub)
-            hot_python = subreddit.hot()    # sorting posts by hot
-            # Extracting comments, symbols from subreddit
-            for submission in hot_python:
-                flair = submission.link_flair_text 
-                author = submission.author.name         
+        total_posts, num_processed_comments, CommentCount, titles, CommentAuthors, CommentTexts, = 0, 0, {}, [], {}, {}         #    RENAMED posts, c_analyzed, tickers, cmt_auth, a_comments TO total_posts, num_processed_comments, CommentCount, CommentAuthors, CommentTexts, DELETED count, 
+        #   total_posts & num_processed_comments: used for logging
+        #   CommentCount: contains the number of comments for a stock
+        #   titles: contains the titles of all posts, used for logging
+        #   CommentAuthors: Name of author of comments in CommentText about a given stock
+        #   CommentTexts: Text of comments about a given stock
+                                                                                                                       
+        for sub in self.subs:                                                                       #   Runs through: 'wallstreetbets', 'stocks', 'investing', and 'stockmarket' subreddits to search for posts
+            subreddit = self.reddit.subreddit(sub)              
+            hot_posts = subreddit.hot()                                                             #   RENAMED hot_python TO hot_posts. Sorting posts by hot
+            
+            for post in hot_posts:                                                                  #   RENAMED submission TO post. Run's through all hot posts
+                flair = post.link_flair_text                                                        #   Flair = "visual flag next to community member's username. It can be used to distinguish trusted community members or highlight specialized areas of knowledge someone may have"
+                author = post.author.name         
                 
-                # checking: post upvote ratio # of upvotes, post flair, and author 
-                if submission.upvote_ratio >= self.upvoteRatio and submission.ups > self.ups and (flair in self.post_flairs or flair is None) and author not in self.ignoreAuthP:   
-                    submission.comment_sort = 'new'     
-                    comments = submission.comments
-                    titles.append(submission.title)
-                    posts += 1
-                    submission.comments.replace_more(limit=self.limit)   
-                    for comment in comments:
+                #   Checking: post upvote ratio, # of upvotes, post flair, and author to determine whether or not to analyze the post
+                #   THE POST ITSELF IS NOT CONSIDERED FOR SENTIMENT ANALYSIS, ONLY THE COMMENTS OF THE TOP POSTS
+                if post.upvote_ratio >= self.upvoteRatio and post.ups > self.ups and (flair in self.post_flairs or flair is None) and author not in self.ignoreAuthP:   
+                    post.comment_sort = 'new'     
+                    comments = post.comments                                                        #   Stores comments on post
+                    titles.append(post.title)                                                       #   Adds the title of the post to a list
+                    num_posts += 1                                                                  
+                    post.comments.replace_more(limit=self.limit)                                    #   WHAT DOES THIS DO? 
+                    
+                    for comment in comments:                                                        #   Run through all comments on post
                         # try except for deleted account?
                         try: auth = comment.author.name
                         except: pass
-                        c_analyzed += 1
+                        num_processed_comments += 1                                                
                         
-                        # checking: comment upvotes and author
+                        #   Checking: comment upvotes and author to determine whether or not to analyze the comment
                         if comment.score > self.upvotes and auth not in self.ignoreAuthC:      
-                            split = comment.body.split(" ")
-                            for word in split:
+                            comment_text = comment.body.split(" ")                                         #   RENAMED split TO comment_text FOR CLARITY
+                            for word in comment_text:
                                 word = word.replace("$", "")        
-                                # upper = ticker, length of ticker <= 5, excluded words,                     
-                                if word.isupper() and len(word) <= 5 and word not in blacklist and word in us:
+                                #   upper = ticker, length of ticker <= 5, excluded words,                     
+                                if word.isupper() and len(word) <= 5 and word not in blacklist and word in us:          #   WHAT DOES ISUPPER DO? IF IT CHECKS FOR WORD IN us, IT IS REDUNDANT
                                     
-                                    # unique comments, try/except for key errors
+                                    #   unique comments, try/except for key errors
                                     if self.uniqueCmt and auth not in self.goodAuth:
                                         try: 
                                             if auth in cmt_auth[word]: break
                                         except: pass
                                         
-                                    # counting tickers
-                                    if word in tickers:
-                                        tickers[word] += 1
-                                        a_comments[word].append(comment.body)
-                                        cmt_auth[word].append(auth)
-                                        count += 1
-                                    else:                               
-                                        tickers[word] = 1
-                                        cmt_auth[word] = [auth]
-                                        a_comments[word] = [comment.body]
-                                        count += 1    
+                                    #   counting CommentCount
+                                    if word in CommentCount:                                                   #   If a stock has had a post about it, CommentCount is incremented, and CommmentAuthors & CommentTexts gets new rows with the author and text of the comment, respectively
+                                        CommentCount[word] += 1
+                                        CommentAuthors[word].append(auth)                         
+                                        CommentTexts[word].append(comment.body)
+        
+                                    else:                                                                       #   Otherwise, initialize CommentCount, CommentAuthors, and CommentTexts
+                                        CommentCount[word] = 1
+                                        CommentAuthors[word] = [auth]
+                                        CommentTexts[word] = [comment.body]
 
-        # sorts the dictionary
-        symbols = dict(sorted(tickers.items(), key=lambda item: item[1], reverse = True))
-        top_picks = list(symbols.keys())[0:self.picks]
-        time_elapsed = (time.time() - start_time)
+        #   Sorts CommentCount by highest CommentCount
+        SortedCounts = dict(sorted(CommentCount.items(), key=lambda item: item[1], reverse = True))             #   RENAMED symbols TO SortedCounts FOR CLARITY
+        top_picks = list(SortedCounts.keys())[0:self.picks] 
+        time_elapsed = (time.time() - start_time)                                                               #   Used for logging
 
         # print top picks
-        LOGGER.info("It took {t:.2f} seconds to analyze {c} comments in {p} posts in {s} subreddits.\n".format(t=time_elapsed, c=c_analyzed, p=posts, s=len(self.subs)))
+        LOGGER.info("It took {t:.2f} seconds to analyze {c} comments in {p} posts in {s} subreddits.\n".format(t=time_elapsed, c=num_processed_comments, p=total_posts, s=len(self.subs)))
         LOGGER.info("Posts analyzed saved in titles")
         #for i in titles: print(i)  # prints the title of the posts analyzed
 
         LOGGER.info(f"\n{self.picks} most mentioned picks: ")
 
-        return symbols, a_comments, top_picks
+        return SortedCounts, CommentTexts, top_picks
 
-    def analyze_sentiment(self, symbols, a_comments, top_picks):
-        times = []
-        top = []
+    def analyze_sentiment(self, SortedCounts, CommentTexts, top_picks):
+#        times = []                                                                             #   COMMENTED OUT times, ONLY USED IN GRAPHING. Contains list of times that each stock is mentioned (detached from name). 
+#        top = []                                                                               #   COMMENTED OUT top, ONLY USED IN GRAPHING. Contains String-formatted list "Stock: Count" with all top picks
         for i in top_picks:
-            print(f"{i}: {symbols[i]}")
-            times.append(symbols[i])
-            top.append(f"{i}: {symbols[i]}")
+            print(f"{i}: {SortedCounts[i]}")
+#            times.append(SortedCounts[i])
+#            top.append(f"{i}: {SortedCounts[i]}")
         
         # Applying Sentiment Analysis
-        scores, s = {}, {}
-
+        CommentScores, CumulativeScores = {}, {}                                                #   RENAMED s TO CommentScores, scores TO CumulativeScores FOR CLARITY
+                                                                                                #   tweetscores contains all neg, neu, and pos sentiment for all of a stock's tweets.
+                                                                                                #   cumulativescores contains an average of all neg, neu, and pos sentiment for a stock.
 
         # adding custom words from data.py 
         self.vader.lexicon.update(new_words)
 
-        picks_sentiment = list(symbols.keys())[0:self.picks_ayz]
-        for symbol in picks_sentiment:
-            stock_comments = a_comments[symbol]
-            for cmnt in stock_comments:
-                score = self.vader.polarity_scores(cmnt)
-                if symbol in s:
-                    s[symbol][cmnt] = score
-                else:
-                    s[symbol] = {cmnt:score}      
-                if symbol in scores:
-                    for key, _ in score.items():
-                        scores[symbol][key] += score[key]
-                else:
-                    scores[symbol] = score
+        picks_sentiment = list(SortedCounts.keys())[0:self.picks_ayz]                           #   SEEMS REDUNDANT, SAME AS top_picks?
+        for stock in picks_sentiment:                                                           #   RENAMED symbol TO stock FOR CLARITY
+            stock_comments = CommentTexts[stock]
+            for cmnt in stock_comments:                                                         #   Runs through all comments for the most popular stocks                                          
+                commentScore = self.vader.polarity_scores(cmnt)                                 #   RENAMED score to commentScore FOR CLARITY. commentScore = neg, neu, pos, and compound scores for a given comment
+               
+                if stock in CommentScores:                                                      #   Adds score to CommentScores at index comment if a comment has been processed for it
+                    CommentScores[stock][cmnt] = commentScore
+                else:                                                                           #   Initializes CommentScores if a comment has not yet been processed for it.
+                    CommentScores[stock] = {cmnt:commentScore}  
+                    
+                if stock in CumulativeScores:                                                   #   Adds score to CumulativeScores at if a comment has been processed for it
+                    for sentimentType, _ in commentScore.items():                               #   RENAMED key TO sentimentType (neg, neu, pos) FOR CLARITY.                                  
+                        CumulativeScores[stock][sentimentType] += commentScore[sentimentType]
+                else:                                                                           #   Initializes CumulativeScores if a comment has not yet been processed for it.
+                    CumulativeScores[stock] = commentScore
                     
             # calculating avg.
-            for key in score:
-                scores[symbol][key] = scores[symbol][key] / symbols[symbol]
-                scores[symbol][key]  = "{pol:.3f}".format(pol=scores[symbol][key])
+            for sentimentType in commentScore:                                                   #   Runs through all scores for a stock
+                CumulativeScores[stock][sentimentType] = CumulativeScores[stock][sentimentType] / SortedCounts[stock]           #   The cumulative score for each type of sentiment (neg, neu, pos) is an average of all scores of that type. 
+                CumulativeScores[stock][sentimentType]  = "{pol:.3f}".format(pol=CumulativeScores[stock][sentimentType])        #   Formats CumulativeScores to 3 decimals
         
-        return scores
+        return CumulativeScores
 
 
-    def display_sentiment(self, scores):
-        # printing sentiment analysis 
-        print(f"\nSentiment analysis of top {self.picks_ayz} picks:")
-        df = pd.DataFrame(scores)
-        df.index = ['Bearish', 'Neutral', 'Bullish', 'Total/Compound']
-        df = df.T
-        print(df)
-
-        # Date Visualization
-        # most mentioned picks    
-        squarify.plot(sizes=times, label=top, alpha=.7 )
-        plt.axis('off')
-        plt.title(f"{self.picks} most mentioned picks")
-        plt.show()
-
-        # Sentiment analysis
-        df = df.astype(float)
-        colors = ['red', 'springgreen', 'forestgreen', 'coral']
-        df.plot(kind = 'bar', color=colors, title=f"Sentiment analysis of top {self.picks_ayz} picks:")
-        plt.show()
+#    def display_sentiment(self, scores):
+#        # printing sentiment analysis 
+#        print(f"\nSentiment analysis of top {self.picks_ayz} picks:")
+#        df = pd.DataFrame(scores)
+#        df.index = ['Bearish', 'Neutral', 'Bullish', 'Total/Compound']
+#        df = df.T
+#        print(df)
+#
+#        # Date Visualization
+#        # most mentioned picks    
+#        squarify.plot(sizes=times, label=top, alpha=.7 )
+#        plt.axis('off')
+#        plt.title(f"{self.picks} most mentioned picks")
+#        plt.show()
+#
+#        # Sentiment analysis
+#        df = df.astype(float)
+#        colors = ['red', 'springgreen', 'forestgreen', 'coral']
+#        df.plot(kind = 'bar', color=colors, title=f"Sentiment analysis of top {self.picks_ayz} picks:")
+#        plt.show()
 
     
-    def run_reddit_sentiment(self):
-        symbols, a_comments, top_picks = self.process_reddit_comments_posts()
-        scores = self.analyze_sentiment(symbols, a_comments, top_picks)
-        insert_sentiment_scores(CONNECTION, scores, 'reddit', 'hourly')
-        print("Finished analyzing reddit sentiment")
-        
-    def run_reddit_sentiment(self):
-        symbols, a_comments, top_picks = self.process_reddit_comments_posts()
-        scores = self.analyze_sentiment(symbols, a_comments, top_picks)
-        insert_sentiment_scores(CONNECTION, scores, 'reddit', 'hourly')
-        print("Finished analyzing reddit sentiment")
-        
-        #FIND A WAY TO INSERT_PROCESSED_SCORE WITH ASSET NAME & SCORE
-        #insert_processed_sentiment_score(CONNECTION, asset, score, 'reddit')
+
