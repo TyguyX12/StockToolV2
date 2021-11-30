@@ -4,16 +4,19 @@ import time
 import datetime
 import _thread
 
+tw = TwitterSentiment()
+rd = RedditSentiment()
+DATE = "SOMETHING"
+dates[] = [date1, date2, date3]
+
+
 if __name__ == '__main__':
-    last_day = ''
-    tw = TwitterSentiment()
-    rd = RedditSentiment()
-    while 1:
-        day = datetime.datetime.now().day
-        if day != last_day:
-            last_day = day
-            #function call
-            tw.run_from_db()
+    rd.run_for_date(DATE)                        #ADDED FOR TESTING, will run for a single day to practice running
+#    for day in dates[]
+#        rd.run_for_date(day)
+#        #tw.run_for_date(day)
+                    
+
             
 #       This code is likely going to be heavily modified (or replaced). The current plan includes collecting historical
 #   tweets and reddit posts using their respective APIs. The Reddit data is collected first, and among the most mentioned
