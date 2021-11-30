@@ -45,8 +45,8 @@ class RedditSentiment(object):
         self.picks = 30     # define # of picks here, prints as "Top ## picks are:"
         self.picks_ayz = 30   # define # of picks for sentiment analysis
 
-
-    def run_reddit_sentiment(self, date):                                                       #   ADDED date
+        
+   def run_for_date(self, date):                                                               #   ADDED date
         SortedCounts, CommentTexts, top_picks = self.process_reddit_comments_posts(date)        #   Goes through hot Reddit posts and collects comments about stocks
                                                                                                 #   TODO, ONLY SEARCH FOR REDDIT POSTS FOR A GIVEN DATE
         
@@ -57,7 +57,7 @@ class RedditSentiment(object):
         
         
         
-    def process_reddit_comments_posts(self):
+    def process_reddit_comments_posts(self, date):
         start_time = time.time()
         total_posts, num_processed_comments, CommentCount, titles, CommentAuthors, CommentTexts, = 0, 0, {}, [], {}, {}         #    RENAMED posts, c_analyzed, tickers, cmt_auth, a_comments TO total_posts, num_processed_comments, CommentCount, CommentAuthors, CommentTexts, DELETED count, 
         #   total_posts & num_processed_comments: used for logging
@@ -76,7 +76,7 @@ class RedditSentiment(object):
                 
                 #   Checking: post upvote ratio, # of upvotes, post flair, and author to determine whether or not to analyze the post
                 #   THE POST ITSELF IS NOT CONSIDERED FOR SENTIMENT ANALYSIS, ONLY THE COMMENTS OF THE TOP POSTS
-                if post.upvote_ratio >= self.upvoteRatio and post.ups > self.ups and (flair in self.post_flairs or flair is None) and author not in self.ignoreAuthP:   
+                if post.DATE = date and post.upvote_ratio >= self.upvoteRatio and post.ups > self.ups and (flair in self.post_flairs or flair is None) and author not in self.ignoreAuthP:   
                     post.comment_sort = 'new'     
                     comments = post.comments                                                        #   Stores comments on post
                     titles.append(post.title)                                                       #   Adds the title of the post to a list
