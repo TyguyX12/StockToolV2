@@ -20,109 +20,15 @@
 --
 
 DROP TABLE IF EXISTS `historicaldata`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `historicaldata` (
-  `idHistoricalData` int NOT NULL AUTO_INCREMENT,
-  `Open` decimal(10,2) NOT NULL,
-  `High` decimal(10,2) NOT NULL,
-  `Low` decimal(10,2) NOT NULL,
-  `Close` decimal(10,2) NOT NULL,
-  `MarketCap` decimal(15,2) NOT NULL,
-  `StockReference` int NOT NULL,
-  `time_stamp` datetime NOT NULL,
-  PRIMARY KEY (`idHistoricalData`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `historicaldata`
---
-
-LOCK TABLES `historicaldata` WRITE;
-/*!40000 ALTER TABLE `historicaldata` DISABLE KEYS */;
-/*!40000 ALTER TABLE `historicaldata` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `redditdata`
---
 
 DROP TABLE IF EXISTS `redditdata`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `redditdata` (
-  `idRedditData` int NOT NULL AUTO_INCREMENT,
-  `Submission_title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `Submission_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `Upvote_ratio` float NOT NULL,
-  `Upvotes` int NOT NULL,
-  `Comment` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
-  `Comment_author` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
-  `Flair` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
-  `Created` datetime DEFAULT NULL,
-  `StockReference` int DEFAULT NULL,
-  PRIMARY KEY (`idRedditData`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `redditdata`
---
-
-LOCK TABLES `redditdata` WRITE;
-/*!40000 ALTER TABLE `redditdata` DISABLE KEYS */;
-/*!40000 ALTER TABLE `redditdata` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `stock_exchanges`
---
 
 DROP TABLE IF EXISTS `stock_exchanges`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `stock_exchanges` (
-  `idstock_exchanges` int NOT NULL AUTO_INCREMENT,
-  `stock_exchanges_name` varchar(255) COLLATE utf8_bin NOT NULL,
-  PRIMARY KEY (`idstock_exchanges`),
-  UNIQUE KEY `stock_exchanges_name_UNIQUE` (`stock_exchanges_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `stock_exchanges`
---
-
-LOCK TABLES `stock_exchanges` WRITE;
-/*!40000 ALTER TABLE `stock_exchanges` DISABLE KEYS */;
-/*!40000 ALTER TABLE `stock_exchanges` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `stocks`
---
 
 DROP TABLE IF EXISTS `stocks`;
+
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `stocks` (
-  `idStocks` int NOT NULL AUTO_INCREMENT,
-  `idStockExchange` int NOT NULL,
-  `StockSymbol` varchar(45) COLLATE utf8_bin NOT NULL,
-  `StockName` varchar(200) CHARACTER SET ascii COLLATE ascii_general_ci NOT NULL,
-  PRIMARY KEY (`idStocks`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `stocks`
---
-
-LOCK TABLES `stocks` WRITE;
-/*!40000 ALTER TABLE `stocks` DISABLE KEYS */;
-/*!40000 ALTER TABLE `stocks` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `twitterdata`
@@ -145,8 +51,6 @@ CREATE TABLE `twitterdata` (
   `Created` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `StockReference` int NOT NULL,
   `processed` varchar(1) NOT NULL DEFAULT 'N',
-  `processed_daily` varchar(1) NOT NULL DEFAULT 'N',
-  `processed_weekly` varchar(1) NOT NULL DEFAULT 'N',
   PRIMARY KEY (`idTwitterData`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -164,107 +68,20 @@ UNLOCK TABLES;
 -- Dumping routines for database 'stocktooldb'
 --
 /*!50003 DROP PROCEDURE IF EXISTS `Add_Stock` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE PROCEDURE Add_Stock (p_idStockExchange int, p_StockSymbol varchar(45), p_StockName varchar(200))
-BEGIN
-insert into stocks
-		(idStockExchange, StockSymbol, StockName)
-	values
-		(p_idStockExchange, p_StockSymbol, p_StockName);
-END;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `Add_stock_exchanges` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-
-CREATE PROCEDURE Add_stock_exchanges(p_stock_exchanges_name varchar(255))
-BEGIN
-insert into stock_exchanges 
-		(stock_exchanges_name)
-	values
-		(p_stock_exchanges_name);
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `Create_Historical_Data_Row` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-
-CREATE PROCEDURE Create_Historical_Data_Row (p_Open decimal(10,2), p_High decimal(10,2), p_Low decimal(10,2), p_Close decimal(10,2), p_MarketCap decimal(15,2), p_StockReference int, p_time_stamp datetime)
-BEGIN
-insert into historicaldata
-		(Open, High, Low, Close, MarketCap, StockReference, time_stamp)
-	values
-		(p_Open, p_High, p_Low, p_Close, p_MarketCap, p_StockReference, p_time_stamp);
-END;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `Historical_Data_Row` */;
 /*!50003 DROP PROCEDURE IF EXISTS `Create_Reddit_Row` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
-
-DELIMITER ;;
-CREATE PROCEDURE Create_Reddit_Row (p_Submission_title varchar(255), p_Submission_name varchar(255), p_Upvote_ratio float, p_Upvotes int, p_Comment LONGTEXT, p_Comment_author LONGTEXT, p_Flair LONGTEXT, p_Created DATETIME, p_StockReference int)
-
-BEGIN
-insert into redditdata 
-		(Submission_title, Submission_name, Upvote_ratio, Upvotes, Comment, Comment_author, Flair, Created, StockReference)
-        values
-        (p_Submission_title, p_Submission_name, p_Upvote_ratio, p_Upvotes, p_Comment, p_Comment_author, p_Flair, p_Created, p_StockReference);
-END;;
-
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `Create_Twitter_Row` */;
+
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET character_set_client  = utf8mb4 */ ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
 /*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+
 
 DELIMITER ;;
 CREATE PROCEDURE Create_Twitter_Row(p_username varchar(255), p_DescriptionOfUser longtext, p_Location mediumtext, p_following longtext, p_followers int, p_totaltweets int, p_RetweetCount int, p_Hashtags longtext, p_TweetText mediumtext, p_Created datetime, p_StockReference int)
@@ -274,31 +91,9 @@ INSERT INTO twitterdata
         VALUES
         (p_username, p_DescriptionOfUser, p_Location, p_following, p_followers, p_totaltweets, p_RetweetCount, p_Hashtags, p_TweetText, p_Created, p_StockReference);
 END;;
-
 DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `Historical_Data_Row` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
 
-DELIMITER ;;
-CREATE PROCEDURE Historical_Data_Row(p_Open decimal(10,2), p_High decimal(10,2), p_Low decimal(10,2), p_Close decimal(10,2),  p_MarketCap decimal(15,2), p_StockReference int, p_time_stamp datetime)
-BEGIN
-insert into historicaldata
-		(Open, High, Low, Close, MarketCap, StockReference, time_stamp)
-	values
-		(p_Open, p_High, p_Low, p_Close, p_MarketCap, p_StockReference, p_time_stamp);
-END;;
-DELIMITER ;
+
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
