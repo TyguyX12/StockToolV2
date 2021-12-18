@@ -1,20 +1,23 @@
-from sentiment_analysis.twitter_stock_sentiment import TwitterSentiment
-from sentiment_analysis.reddit_stock_sentiment import RedditSentiment
+from twitter_stock_sentiment import TwitterSentiment
+from reddit_stock_sentiment import RedditSentiment
 import time
 import datetime
 import _thread
 
 tw = TwitterSentiment()
 rd = RedditSentiment()
-DATE = "SOMETHING"
-dates[] = [date1, date2, date3]
+
+DATES = [datetime.date(YYYY, MM, D)]
+
+#dates[] = [date1, date2, date3]
 
 
 if __name__ == '__main__':
-    rd.run_for_date(DATE)                        #ADDED FOR TESTING, will run for a single day to practice running
-#    for day in dates[]
-#        rd.run_for_date(day)
-#        #tw.run_for_date(day)
+    for date in DATES:
+        print("Running for: " + str(date))
+        #rd.run_for_date(date)
+        tw.run_for_date(date)                      
+
                     
 
             
