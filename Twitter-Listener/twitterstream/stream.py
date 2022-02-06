@@ -1,55 +1,85 @@
-from config import config
-from twitterstream.mysql_connector import *
+from config import *
 import tweepy
 import json
+import datetime
+import csv
+import tkinter as tk
 
+root= tk.Tk()
 
-CONNECTION = create_mysql_connection()
+StocksToSearch = []
 
 def start_live_listener():
     '''
     Starts Twitter Listener
     '''
-    #instantiates listener processor
-    listener = TwitterStreamListener()
+    
+    stream = TwitterStreamListener(
+            TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET,
+            TWITTER_ACCESS_TOKEN, TWITTER_ACCESS_SECRET
+            )
 
-    #connects to twitter api
-    auth = tweepy.OAuthHandler(config.CONSUMER_KEY, config.CONSUMER_SECRET)
-    auth.set_access_token(config.ACCESS_TOKEN_KEY, config.ACCESS_TOKEN_SECRET)
+    StocksToSearch = readSuperCSV()
 
-    #begins stream
-    stream = tweepy.streaming.Stream(auth, listener)
-    stream.filter(track=['#stocks', '#wallstreet', '#stockmarket', '#stonk', '#crypto'])
+    stream.filter(track=StocksToSearch)
 
+def readSuperCSV():
+    #   Creates the  StocksToSearch dictionary with the schema for how Tweets will be collected using the superCSV and the dailyCSV
+    #   First, the superCSV is used as a template, because it will always contain more stocks.
+    #   Then, the dailyCSV is placed on top of the superCSV, the higher of the two TweetWeights will be used. 
+    #   If a stock is the the superCSV and has a requirement, the  StocksToSearch dictionary will reflect this
+    #   If a stock is in the dailyCSV and not the superCSV, it must be calculated whether or not the stock will need an additional requirement
+        
+        global StocksToSearch
 
-class TwitterStreamListener(tweepy.streaming.StreamListener):
+        superPath = ('/users/tymar/downloads/Schoolwork/Capstone/Twitter/superCSV.csv')
 
+        with open(superPath, newline='\n') as superFile:
+            superReader = csv.reader(superFile, delimiter=',', quotechar='|')
+            for line in superReader:
+                if str(line[0]) ==  'stock':
+                    continue
+                newStock = "$" + str(line[0])
+                StocksToSearch.append(newStock)
+        
+        #print(StocksToSearch)
+        return StocksToSearch
+
+class TwitterStreamListener(tweepy.Stream):
     ''' Handles LIVE data received from the stream. '''
-
-    def on_status(self, status):
+    #SortedCounts, TweetTexts, TweetCounts = {}, {}, {}
+    global StocksToSearch
+    tweetsCSVPath = open(('/users/tymar/downloads/Schoolwork/Capstone/Twitter/Tweets/Tweets-' + str(datetime.date.today()) + '.csv'), 'a')
+    tweetsCSVWriter = csv.writer(tweetsCSVPath)
+    
+    def on_status(self, status): 
         try:
-            tweet_dict = {}
-            #tweet_dict['id'] = status.id
-            tweet_dict['username'] = status.user.name
-            tweet_dict['location'] = status.user.location
-            tweet_dict['text'] = status.text
-            tweet_dict['followers'] = status.user.followers_count
-            tweet_dict['total_tweets'] = status.user.statuses_count
-            tweet_dict['following'] = status.user.following
-            tweet_dict['friends_count'] = status.user.friends_count
-            tweet_dict['created'] = status.created_at
+            stock = ''
+            tweetText = str(status.text.encode("utf-8"))
 
-            insert_tweets_db(CONNECTION, tweet_dict)
+            tweetText = tweetText.replace("\\", " ")
+            tweetText = tweetText.replace("b'",  " ")
+            tweetText = tweetText.replace('b"',  " ")
 
-            config.LOGGER.info(tweet_dict)
+            for word in tweetText.split(' '):
+                if len(word) > 0 and len(word) < 7 and word[0] == '$' and word.upper() in StocksToSearch:
+                    stock = word[1:].upper()
+                    print(stock + ": " + tweetText)
+                    self.tweetsCSVWriter.writerow([stock, tweetText])    
+            
+
+            LOGGER.info(tweetText)
             return True
         except Exception as e:
-            config.LOGGER.error(e)
+            LOGGER.error(e)
 
     def on_error(self, status_code):
-        config.LOGGER.error('Got an error with status code: ' + str(status_code))
+        LOGGER.error('Got an error with status code: ' + str(status_code))
         return True # To continue listening
 
     def on_timeout(self):
-        config.LOGGER.info('Timeout...')
+        LOGGER.info('Timeout...')
         return True # To continue listening
+
+
+start_live_listener()
