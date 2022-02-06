@@ -127,8 +127,9 @@ class RedditSentiment(object):
                                     except: 
                                         pass
                                         
-                                    #   counting CommentCounts
                                     print(word + ": Date of post - " + str(datetime.date.fromtimestamp(post.created_utc)) + ", Date of comment - " + str(datetime.date.fromtimestamp(comment.created_utc)) + ", Comment = " + str(comment.body)) 
+                                   
+                                   #   counting CommentCounts
                                     if word in CommentCounts:                                                   #   If a stock has had a post about it, CommentCount is incremented, and CommmentAuthors & CaommentTexts gets new rows with the author and text of the comment, respectively
                                         CommentCounts[word] += 1
                                         CommentAuthors[word].append(auth)                         
@@ -197,7 +198,7 @@ class RedditSentiment(object):
 
     def create_sentiment_csv(self, scores, counts, date):
         csvName = "Reddit-" + str(date)
-        pathToCSV = open(('/users/tymar/downloads/Schoolwork/Machine Learning/RedditScores/' + csvName + ".csv"), 'w')
+        pathToCSV = open(('/users/tymar/downloads/Schoolwork/Capstone/Reddit/RedditScores/' + csvName + ".csv"), 'w')
         csvWriter = csv.writer(pathToCSV)
         csvWriter.writerow(["source", "date", "stock", "neg", "neu", "pos", "comp", "instances"])
         for stock in scores:
