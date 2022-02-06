@@ -1,0 +1,4 @@
+This is the Machine Learning code for the stock tool
+This code was written by Brian Shuler for the Machine Learning course
+This code will be used to assess the correlations between sentiment and stock price change
+The results of the ML course were pessimistic, although it is possible that reducing noise will yield a better result
