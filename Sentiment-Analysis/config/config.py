@@ -7,12 +7,7 @@ of all the NYSE, NASDAQ and NYSEAMERICAN public traded companies.
 import logging
 import os
 from logging.handlers import TimedRotatingFileHandler
-#from dotenv import load_dotenv
-from pathlib import Path
 
-#dotenv_path = Path('/home/stocktool/envs/ci.env')
-
-#load_dotenv(dotenv_path=dotenv_path)
 
 REDDIT_ID = 'ZPvVSklxwit2wCn9Um2JTg'
 REDDIT_SECRET = '_Vl3K5HDiQ9hN7WH-aoVl18evECzBA'
@@ -51,7 +46,12 @@ new_words = {
      'overvalued': -3.0,
      'undervalued': 3.0,
      'buy': 4.0,
+     'buying': 4.0,
+     'buys': 3.0,
      'sell': -4.0,
+     'selling': -4.0,
+     'sells': -3.5,
+     'sold': -3.0,
      'gone': -1.0,
      'gtfo': -1.7,
      'paper': -1.7,
@@ -76,7 +76,29 @@ new_words = {
      'hot': 1.5,
      'drop': -2.5,
      'rebound': 1.5,  
-     'crack': 2.5,}
+     'crack': 2.5,
+     'earn': 3.5,
+     'earns': 3.5,
+     'earned': 3.0,
+     'earning': 2.5,
+     'earnings': 2.5,
+     'lose': -3.5,
+     'loses': -3.5,
+     'lost': -3.0,
+     'soar': 4.0,
+     'soaring': 4.0,
+     'soared': 3.5,
+     'scandal': 2.5,
+     'surging': 3.5,
+     'surge': 3.5,
+     'surged': 3.0,
+     'up': 4.0,
+     'upside': 3.0,
+     'down': -4.0,
+     'downside': -3.0,
+     'best': 4.0,
+     'worst': 4.0,
+     }
 
 
 
@@ -97,7 +119,7 @@ def __create_logger(path):
 
 
 #instantiates loger
-LOGGER = __create_logger('/users/tymar/downloads/Schoolwork/Machine Learning/sentiment_analysis.log')
+LOGGER = __create_logger('/users/tymar/downloads/Schoolwork/Capstone/sentiment_analysis.log')
 
 #db config also loaded from env variables
 DB_CONFIG = {
