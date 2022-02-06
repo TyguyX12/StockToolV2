@@ -2,9 +2,6 @@ import praw
 from config import *
 from mysql_connector_sentiment_analysis import *
 import time
-import pandas as pd
-import matplotlib.pyplot as plt
-import squarify
 import datetime
 import csv
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
@@ -230,5 +227,4 @@ class RedditSentiment(object):
     #        df.plot(kind = 'bar', color=colors, title=f"Sentiment analysis of top {self.picks_ayz} picks:")
     #        plt.show()
 
-    
-
+   
