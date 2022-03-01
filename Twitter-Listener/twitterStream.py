@@ -3,9 +3,6 @@ import tweepy
 import json
 import datetime
 import csv
-import tkinter as tk
-
-root= tk.Tk()
 
 StocksToSearch = []
 
@@ -13,6 +10,8 @@ def start_live_listener():
     '''
     Starts Twitter Listener
     '''
+    
+    print("Starting Listener")
     
     stream = TwitterStreamListener(
             TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET,
@@ -30,9 +29,10 @@ def readSuperCSV():
     #   If a stock is the the superCSV and has a requirement, the  StocksToSearch dictionary will reflect this
     #   If a stock is in the dailyCSV and not the superCSV, it must be calculated whether or not the stock will need an additional requirement
         
+        print("Reading SuperCSV")
         global StocksToSearch
 
-        superPath = ('/users/tymar/downloads/Schoolwork/Capstone/Twitter/superCSV.csv')
+        superPath = ('/Users/tymar/OneDrive/Documents/Capstone/Twitter/superCSV.csv')
 
         with open(superPath, newline='\n') as superFile:
             superReader = csv.reader(superFile, delimiter=',', quotechar='|')
@@ -42,31 +42,33 @@ def readSuperCSV():
                 newStock = "$" + str(line[0])
                 StocksToSearch.append(newStock)
         
-        #print(StocksToSearch)
+        print("Finished Reading SuperCSV")
+        print("Stocks to search: " + str(StocksToSearch))
         return StocksToSearch
 
 class TwitterStreamListener(tweepy.Stream):
     ''' Handles LIVE data received from the stream. '''
     #SortedCounts, TweetTexts, TweetCounts = {}, {}, {}
     global StocksToSearch
-    tweetsCSVPath = open(('/users/tymar/downloads/Schoolwork/Capstone/Twitter/Tweets/Tweets-' + str(datetime.date.today()) + '.csv'), 'a')
-    tweetsCSVWriter = csv.writer(tweetsCSVPath)
-    
+    print("Initializing Stream")    
     def on_status(self, status): 
         try:
+            tweetsCSVPath = open(('/Users/tymar/OneDrive/Documents/Capstone/Twitter/Tweets/Tweets-' + str(datetime.date.today()) + '.csv'), 'a')
+            tweetsCSVWriter = csv.writer(tweetsCSVPath)
             stock = ''
             tweetText = str(status.text.encode("utf-8"))
-
             tweetText = tweetText.replace("\\", " ")
             tweetText = tweetText.replace("b'",  " ")
             tweetText = tweetText.replace('b"',  " ")
+            tweetText = tweetText.replace(",",  " ")
 
             for word in tweetText.split(' '):
                 if len(word) > 0 and len(word) < 7 and word[0] == '$' and word.upper() in StocksToSearch:
                     stock = word[1:].upper()
                     print(stock + ": " + tweetText)
-                    self.tweetsCSVWriter.writerow([stock, tweetText])    
+                    tweetsCSVWriter.writerow([stock, tweetText])    
             
+            tweetsCSVPath.close()
 
             LOGGER.info(tweetText)
             return True
