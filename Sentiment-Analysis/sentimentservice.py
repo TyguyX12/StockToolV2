@@ -1,15 +1,13 @@
-from twitter_stock_sentiment import TwitterSentiment
-from reddit_stock_sentiment import RedditSentiment
-import time
+from twitter_sentiment import TwitterSentiment
+from reddit_sentiment import RedditSentiment
 import datetime
-import _thread
 import csv
 from config import *
 
 tw = TwitterSentiment()
 rd = RedditSentiment()
 
-#DATES = [datetime.date(2021, 12, 7)]
+#DATES = [datetime.date(2022, 2, 15), datetime.date(2022, 2, 16)]
 TODAY = datetime.date.today()
 
 #dates[] = [date1, date2, date3]
@@ -22,14 +20,14 @@ def createSuperCSV(threshold):
     #   Where requiresAdditionalHashtag is a boolean indicating whether or not the stock requires a second stock-related hashtag (ex. a 1-2 character stock, or a common word)  
     #   and tweetWeight is the number of Tweets that are collected in one scrape of the Tweet Collector (NOT IMPLEMENTED)
     #   This algorithm may be imperfect, and may require additional dilligence on behalf of the user to make sure common words are not included ("Ex. HOPE")
-
+        print("Creating Super CSV")
         StockCounts, StockAdditionalHashtags = {}, {}                                              #   StockCounts keeps track of stock names and counts while iterating over all of the stocks
                                                                                                    #   StockAdditionalHashtags keeps track of stock names and whether or not they will need an additional hashtag.
 
-        superCSVPath = open(('/users/tymar/downloads/Schoolwork/Capstone/Twitter/superCSV.csv'), 'w')
+        superCSVPath = open(('/Users/tymar/OneDrive/Documents/Capstone/Twitter/superCSV.csv'), 'w')
         superCSVWriter = csv.writer(superCSVPath)
 
-        scorePath = '/users/tymar/downloads/Schoolwork/Capstone/Reddit/RedditScores/'
+        scorePath = '/Users/tymar/OneDrive/Documents/Capstone/Reddit/Sentiment Scores/'
         for fileName in os.listdir(scorePath):
             filePath = str(scorePath) + str(fileName)
             with open(filePath, newline='\n') as csvfile:
@@ -51,7 +49,9 @@ def createSuperCSV(threshold):
                 superCSVWriter.writerow([str(stock[0]), str(StockCounts[stock[0]])])
 
         superCSVPath.close()
-    
+        print("Finished Creating Super CSV")
+
+
 if __name__ == '__main__':
     createSuperCSV(3)
     tw.run_for_date(TODAY)                
