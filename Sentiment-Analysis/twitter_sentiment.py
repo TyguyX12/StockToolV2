@@ -1,10 +1,7 @@
 from config import *
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
-from mysql_connector_sentiment_analysis import *
 import csv
 import datetime
-
-#   CONNECTION = create_mysql_connection()
 
 
 class TwitterSentiment(object):
@@ -34,14 +31,15 @@ class TwitterSentiment(object):
     def runSentimentAnalysisForDate(self, date):
         TweetTexts, TweetCounts, ProcessedTweetCounts, TweetScores, CumulativeScores = {}, {}, {}, {}, {}
 
-        tweetPath = '/users/tymar/downloads/Schoolwork/Capstone/Twitter/Tweets/Tweets-' + str(date) + '.csv'
+        tweetPath = '/Users/tymar/OneDrive/Documents/Capstone/Twitter/Tweets/Tweets-' + str(date) + '.csv'
 
-        # adding custom words from data.py 
+        # adding custom words from config
         self.vader.lexicon.update(new_words)
                 
         print("Starting Sentiment Analysis for date: " + str(date))
         with open(tweetPath, newline='\n') as tweetCSV:
-            tweetReader = csv.reader(tweetCSV, delimiter=',', quotechar='"')
+    
+            tweetReader = csv.reader(_.replace('\x00', '') for _ in tweetCSV)
             for line in tweetReader:
                 if line[0] in TweetCounts:                                                #   If a stock has had a tweet about it, TweetCount is incremented & TweetTexts gets new rows with text of the comment
                     TweetCounts[line[0]] += 1
@@ -54,10 +52,8 @@ class TwitterSentiment(object):
         SortedCounts = dict(sorted(TweetCounts.items(), key=lambda item: item[1], reverse = True))
         SortedList = list(SortedCounts.keys())
         
-        for stock in SortedList:                                                        
-            stock_tweets = TweetTexts[stock]
-            
-            for tweet in stock_tweets:                                                         #   Runs through all comments for the most popular stocks                                          
+        for stock in SortedList:                                                                
+            for tweet in TweetTexts[stock]:                                                         #   Runs through all comments for the most popular stocks                                          
                 
                 #TODO: MAKE IT SO THAT ONLY NEARBY WORDS ARE COUNTED (POSSIBLY REMOVE NOISE)
                 tweet = self.processTweetText(tweet, stock)
@@ -68,10 +64,21 @@ class TwitterSentiment(object):
 
                     if stock in TweetScores:                                                      #   Adds score to CommentScores at index comment if a comment has been processed for it
                         TweetScores[stock][tweet] = tweetScore
-                        ProcessedTweetCounts[stock] += 1
+                        if tweetScore['compound'] < -0.33:
+                            ProcessedTweetCounts[stock]['neg'] += 1
+                        elif tweetScore['compound'] < 0.33:
+                            ProcessedTweetCounts[stock]['neu'] += 1
+                        else:
+                            ProcessedTweetCounts[stock]['pos'] += 1
+                        ProcessedTweetCounts[stock]['total'] += 1
                     else:                                                                           #   Initializes CommentScores if a comment has not yet been processed for it.
                         TweetScores[stock] = {tweet:tweetScore}
-                        ProcessedTweetCounts[stock] = 1
+                        if tweetScore['compound'] < -0.33:
+                            ProcessedTweetCounts[stock] = {'neg': 1, 'neu': 0, 'pos': 0, 'total': 1}
+                        elif tweetScore['compound'] < 0.33:
+                            ProcessedTweetCounts[stock] = {'neg': 0, 'neu': 1, 'pos': 0, 'total': 1}
+                        else:
+                            ProcessedTweetCounts[stock] = {'neg': 0, 'neu': 0, 'pos': 1, 'total': 1}
                     
                     if stock in CumulativeScores:                                                   #   Adds score to CumulativeScores at if a comment has been processed for it
                         for sentimentType, score in tweetScore.items():                                                       
@@ -83,27 +90,22 @@ class TwitterSentiment(object):
                     # calculating avg.
             try:
                 for sentimentType in CumulativeScores[stock]:                                                   #   Runs through all scores for a stock
-                    CumulativeScores[stock][sentimentType] = float(CumulativeScores[stock][sentimentType]) / float(ProcessedTweetCounts[stock])          #   The cumulative score for each type of sentiment (neg, neu, pos) is an average of all scores of that type. 
+                    CumulativeScores[stock][sentimentType] = float(CumulativeScores[stock][sentimentType]) / float(ProcessedTweetCounts[stock]['total'])          #   The cumulative score for each type of sentiment (neg, neu, pos) is an average of all scores of that type. 
                     CumulativeScores[stock][sentimentType]  = "{pol:.3f}".format(pol=CumulativeScores[stock][sentimentType])        #   Formats CumulativeScores to 3 decimals
-            except Exception:
+            except Exception:    #  Catch exceptions for stocks with posts, but without processed posts (neutral score under threshold)
                 pass
 
-        ProcessedSortedCounts = dict(sorted(ProcessedTweetCounts.items(), key=lambda item: item[1], reverse = True))
-
-        print(ProcessedSortedCounts)
-        return ProcessedSortedCounts, CumulativeScores           
+        return ProcessedTweetCounts, CumulativeScores           
 
 
     def create_sentiment_csv(self, scores, counts, date):
     #   Creates the CSV file with the sentiment information for a given day
         csvName = "Twitter-" + str(date)
-        pathToCSV = open(('/users/tymar/downloads/Schoolwork/Capstone/Twitter/Sentiment Scores/' + csvName + ".csv"), 'w')   
+        pathToCSV = open(('/Users/tymar/OneDrive/Documents/Capstone/Twitter/Sentiment Scores/' + csvName + ".csv"), 'w')   
         csvWriter = csv.writer(pathToCSV)
-        csvWriter.writerow(["source", "date", "stock", "neg", "neu", "pos", "comp", "instances"])
-        for stock in counts:
-            newRow = ["twitter", str(date), stock, scores[stock]['neg'], scores[stock]['neu'], scores[stock]['pos'],  scores[stock]['compound'], counts[stock]] 
-            print(newRow)
-            csvWriter.writerow(newRow)
+        csvWriter.writerow(["source", "date", "stock", "neg", "neu", "pos", "comp", "negative instances", "neutral instances", "positive instances", "total instances"])
+        for stock in sorted(counts.keys(), key=lambda stock:(-counts[stock]['total'], stock)):
+            csvWriter.writerow(["twitter", str(date), stock, scores[stock]['neg'], scores[stock]['neu'], scores[stock]['pos'], scores[stock]['compound'], counts[stock]['neg'], counts[stock]['neu'], counts[stock]['pos'], counts[stock]['total']])
         pathToCSV.close()
         LOGGER.info(f"\n{csvName} Created: ")
     
@@ -118,7 +120,11 @@ class TwitterSentiment(object):
 
         return tweet
 
-    ###UNIT TESTS
+    
+ 
 if __name__ == '__main__':
-    twitter = TwitterSentiment()
-    twitter.run_for_date(datetime.date(2021, 11, 30))
+    TODAY = datetime.date.today()
+    tw = TwitterSentiment()
+    tw.run_for_date(TODAY)
+
+    
