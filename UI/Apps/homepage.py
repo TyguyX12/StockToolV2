@@ -156,7 +156,7 @@ def get_candles(source, asset, timeframe):
         raise PreventUpdate
     volume, candles = lib.get_volume_candles(source, asset, timeframe)
 
-    return True, volume, candles
+    return True, volume, candles.to_dict('list')
 
 @app.callback(
     Output('session-sentiment', 'data'),
