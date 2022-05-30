@@ -15,10 +15,10 @@ df_test = list()
 
 #folderList = ["RedditScores", "twitterscores"]
 #folderList = ["RedditScores"]#, "twitterscores"]
-folderList = ["twitterscores"]#, ]
+folderList = ["/Users/tymar/OneDrive/Documents/Capstone/Reddit/Sentiment Scores/", "/Users/tymar/OneDrive/Documents/Capstone/Twitter/Sentiment Scores/"]
 for folderName in folderList:
     for path in Path(folderName).iterdir():
-        #print(path)
+        print(path)
         fileopen = open(path, "r")
         fileread = fileopen.read()
         # using splitlines() function to display the contents of the file as a list
@@ -32,7 +32,7 @@ for folderName in folderList:
                     ticker = fileRow[2]
                     #print(ticker)
                     try:
-                        if int(fileRow[7]) >= minScores:
+                        if int(fileRow[10]) >= minScores:
                             startdate = start = fileRow[1]
                             if offsetDays > 0:
                                 startdate = pd.to_datetime(startdate) + pd.DateOffset(days=offsetDays)
@@ -81,5 +81,4 @@ for folderName in folderList:
 
                     except:
                         print(ticker, startdate, enddate)
-
 
