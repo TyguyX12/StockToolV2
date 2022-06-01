@@ -4,6 +4,7 @@ DROP TABLE IF EXISTS `sentimentdata`;
 CREATE TABLE `sentimentdata` (
   `id` int NOT NULL AUTO_INCREMENT,
   `source` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `date` datetime NOT NULL DEFAULT CAST(GETDATE() AS Date),
   `asset` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
   `score_neg` int,
   `score_neu` int,
@@ -11,7 +12,8 @@ CREATE TABLE `sentimentdata` (
   `num_neg` int,
   `num_neu` int,
   `num_pos` int,
-  `date` datetime NOT NULL DEFAULT CAST(GETDATE() AS Date),
+  `total_posts` int,
+  
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
