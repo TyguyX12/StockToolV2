@@ -10,148 +10,34 @@ import dateutil.parser as dparser
 from datetime import datetime, timedelta
 from sklearn.cross_decomposition import CCA
 
-#https://cmdlinetips.com/2020/12/canonical-correlation-analysis-in-python/
-def example():
-    link2data = "https://raw.githubusercontent.com/mwaskom/seaborn-data/master/penguins.csv"
-    df = pd.read_csv(link2data)
-    df =df.dropna()
-    #print(df.head())
 
-    X = df[['bill_length_mm','bill_depth_mm']]
-    #print(X.head())
-
-    #bill_length_mm  bill_depth_mm
-    #0   39.1    18.7
-    #1   39.5    17.4
-    #2   40.3    18.0
-    #4   36.7    19.3
-    #5   39.3    20.6
-
-    #print(X.head())
-    X_mc = (X-X.mean())/(X.std())
-    #print(X_mc.head())
- 
-    #    bill_length_mm  bill_depth_mm
-    #0   -0.894695   0.779559
-    #1   -0.821552   0.119404
-    #2   -0.675264   0.424091
-    #4   -1.333559   1.084246
-    #5   -0.858123   1.744400
-
-    Y = df[['flipper_length_mm','body_mass_g']]
-    #print(Y.head())
-
-    Y_mc = (Y-Y.mean())/(Y.std())
-    #print(Y_mc.head())
-    #    flipper_length_mm   body_mass_g
-    #0   -1.424608   -0.567621
-    #1   -1.067867   -0.505525
-    #2   -0.425733   -1.188572
-    #4   -0.568429   -0.940192
-    #5   -0.782474   -0.691811
-
-    ca = CCA()
-    ca.fit(X_mc, Y_mc)
-    X_c, Y_c = ca.transform(X_mc, Y_mc)
-
-    cc_res = pd.DataFrame({"CCX_1":X_c[:, 0],
-                           "CCY_1":Y_c[:, 0],
-                           "CCX_2":X_c[:, 1],
-                           "CCY_2":Y_c[:, 1],
-                           "Species":df.species.tolist(),
-                          "Island":df.island.tolist(),
-                          "sex":df.sex.tolist()})
-
-    #print(cc_res.head())
-    #    CCX_1   CCY_1   CCX_2   CCY_2   Species Island  sex
-    #0   -1.186252   -1.408795   -0.010367   0.682866    Adelie  Torgersen   MALE
-    #1   -0.709573   -1.053857   -0.456036   0.429879    Adelie  Torgersen   FEMALE
-    #2   -0.790732   -0.393550   -0.130809   -0.839620   Adelie  Torgersen   FEMALE
-    #3   -1.718663   -0.542888   -0.073623   -0.458571   Adelie  Torgersen   FEMALE
-    #4   -1.772295   -0.763548   0.736248    -0.014204   Adelie  Torgersen   MALE
-
-    #print(np.corrcoef(X_c[:, 0], Y_c[:, 0]))
-    #array([[1.        , 0.78763151],
-    #       [0.78763151, 1.        ]])
-
-    #print(np.corrcoef(X_c[:, 1], Y_c[:, 1]))
- 
-    #array([[1.        , 0.08638695],
-    #       [0.08638695, 1.        ]])
-
-
-    sns.set_context("talk", font_scale=1.2)
-    plt.figure(figsize=(10,8))
-    sns.scatterplot(x="CCX_1",
-                    y="CCY_1", 
-                    data=cc_res)
-    plt.title('Comp. 1, corr = %.2f' %
-             np.corrcoef(X_c[:, 0], Y_c[:, 0])[0, 1])
-    #plt.show()
-
-
-
-    plt.figure(figsize=(10,8))
-    sns.boxplot(x="Species",
-                    y="CCX_1", 
-                   data=cc_res)
-    sns.stripplot(x="Species",
-                    y="CCX_1", 
-                     data=cc_res)
-    #plt.show()
-
-
-    plt.figure(figsize=(10,8))
-    sns.boxplot(x="Species",
-                    y="CCY_1", 
-                     data=cc_res)
-    sns.stripplot(x="Species",
-                    y="CCY_1", 
-                     data=cc_res)
-    #plt.show()
-
-
-    plt.figure(figsize=(10,8))
-    sns.scatterplot(x="CCX_1",
-                    y="CCY_1", 
-                    hue="Species", data=cc_res)
-    plt.title('First Pair of Canonical Covariate, corr = %.2f' %
-             np.corrcoef(X_c[:, 0], Y_c[:, 0])[0, 1])
-    #plt.show()
-
-#   Outline of New CCA:
-#   For the top 50 most mentioned stocks:
-#   For Twitter, Reddit, and Combined:
-#   Random sample (Or exhaustive, permitting) using days & weeks of sentiment/price change
-def StockTool():
+def StockTool(df):
     
-    df = createDF("AAPL")
-    df = df.dropna()
-
     #print(df.head())
 
-    #X is the dataset referring to sentiment
-    SentimentDF = df[['comp_scores', 'total_posts']]
+    SentimentDF = df[['reddit_negative_posts', 'reddit_neutral_posts', 'reddit_positive_posts', 'reddit_negative_score', 'reddit_neutral_score', 'reddit_positive_score', 'reddit_comp_score', 'reddit_total_posts', 'reddit_sentiment_change', 'twitter_negative_posts', 'twitter_neutral_posts', 'twitter_positive_posts', 'twitter_negative_score', 'twitter_neutral_score', 'twitter_positive_score', 'twitter_comp_score', 'twitter_total_posts', 'twitter_sentiment_change']]
+    #SentimentDF = df[['reddit_total_posts', 'reddit_comp_score', 'reddit_sentiment_change', 'twitter_total_posts', 'twitter_comp_score', 'twitter_sentiment_change']]
 
     #Standardize variables by subtracting with mean and dividing by standard deviation.
     Sentiment_mc = (SentimentDF-SentimentDF.mean())/(SentimentDF.std())
     #print(Sentiment_mc.head())
 
-    #Y is the dataset referring to price change
-    PriceDF = df[['price_change_dollars','price_change_percent']]
+    PriceDF = df[['open','close', 'adj_close', 'high', 'low', 'volume', 'price_change_percent']]
+    #PriceDF = df[['adj_close', 'volume', 'price_change_percent']]
     #print(PriceDF.head())
 
     #Standardize variables by subtracting with mean and dividing by standard deviation.
     Price_mc = (PriceDF-PriceDF.mean())/(PriceDF.std())
     #print(Price_mc.head())
 
-    
 
     #Instantiate CCA object and use fit() and transform() functions with the two standardized matrices to perform CCA.
     ca = CCA()
     ca.fit(Sentiment_mc, Price_mc)
     Sentiment_c, Price_c = ca.transform(Sentiment_mc, Price_mc)
     #Metadata dataframe for CCA
+    #print(Sentiment_c.shape)
+    #print(Price_c.shape)
 
     cc_res = pd.DataFrame({
         "CCSentiment_1" : Sentiment_c[:, 0],
@@ -161,107 +47,276 @@ def StockTool():
         "Stock" : df.stock.tolist(),
         "Date" : df.date.tolist()})
 
+
     #print(cc_res.head())
 
     #Correlation of first pair of canonical covariates. 
-    #Uses NumPy’s corrcoef() function to compute correlation.
-    #print(np.corrcoef(Sentiment_c[:, 0], Price_c[:, 0]))
+    #Uses NumPyâ€™s corrcoef() function to compute correlation.
+    print(np.corrcoef(Sentiment_c[:, 0], Price_c[:, 0]))
 
     #Correlation between second pair of covariates
-    #print(np.corrcoef(Sentiment_c[:, 1], Price_c[:, 1]))
+    print(np.corrcoef(Sentiment_c[:, 1], Price_c[:, 1]))
 
-    #Scatter plot 
-    sns.set_context("talk", font_scale=1.2)
     plt.figure(figsize=(10,8))
-    sns.scatterplot(x="CCSentiment_1",
-                    y="CCPrice_1", 
-                    data=cc_res)
-    plt.title('Comp. 1, corr = %.2f' %
-             np.corrcoef(Sentiment_c[:, 0], Price_c[:, 0])[0, 1])
+    sns.scatterplot(x="CCSentiment_1", y="CCPrice_1", hue="Stock", data=cc_res)
+    plt.title('First Pair of Canonical Covariate, corr = %.2f' % np.corrcoef(Sentiment_c[:, 0], Price_c[:, 0])[0, 1])
     plt.show()
+
+
+    ccSentiment_df = pd.DataFrame({
+        "CCSentiment_1":Sentiment_c[:, 0],
+        "CCSentiment_2":Sentiment_c[:, 1],
+        "Stock":df.stock.astype('category').cat.codes,
+        "Date":df.date.astype('category').cat.codes,
+
+        "Negative Reddit Posts": Sentiment_mc.reddit_negative_posts, 
+        "Neutral Reddit Posts": Sentiment_mc.reddit_neutral_posts, 
+        "Positive Reddit Posts": Sentiment_mc.reddit_positive_posts,
+        "Negative Reddit Score": Sentiment_mc.reddit_negative_score,
+        "Neutral Reddit Score": Sentiment_mc.reddit_neutral_score,
+        "Positive Reddit Score": Sentiment_mc.reddit_positive_score,
+        "Compound Reddit Score": Sentiment_mc.reddit_comp_score,
+        "Total Reddit Posts": Sentiment_mc.reddit_total_posts,
+        "Reddit Sentiment Change": Sentiment_mc.reddit_sentiment_change,
+
+        "Negative Twitter Posts": Sentiment_mc.twitter_negative_posts, 
+        "Neutral Twitter Posts": Sentiment_mc.twitter_neutral_posts, 
+        "Positive Twitter Posts": Sentiment_mc.twitter_positive_posts,
+        "Negative Twitter Score": Sentiment_mc.twitter_negative_score,
+        "Neutral Twitter Score": Sentiment_mc.twitter_neutral_score,
+        "Positive Twitter Score": Sentiment_mc.twitter_positive_score,
+        "Compound Twitter Score": Sentiment_mc.twitter_comp_score,
+        "Total Twitter Posts": Sentiment_mc.twitter_total_posts,
+        "Twitter Sentiment Change": Sentiment_mc.twitter_sentiment_change
+        })
+    
+    corr_Sentiment_df= ccSentiment_df.corr(method='pearson')
+    #print(corr_Sentiment_df.head())
+
+    plt.figure(figsize=(10,8))
+    Sentiment_df_lt = corr_Sentiment_df.where(np.tril(np.ones(corr_Sentiment_df.shape)).astype(bool))
+    sns.heatmap(Sentiment_df_lt,cmap="coolwarm",annot=True,fmt='.1g')
+    plt.tight_layout()
+
+
+    ccPrice_df = pd.DataFrame({
+        "CCPrice_1":Price_c[:, 0],
+        "CCPrice_2":Price_c[:, 1],
+        "Stock":df.stock.astype('category').cat.codes,
+        "Date":df.date.astype('category').cat.codes,
+
+        "Open":Price_mc.open,
+        "Close":Price_mc.close,
+        "Adj Close":Price_mc.adj_close,
+        "High":Price_mc.high,
+        "Low":Price_mc.low,
+        "Volume":Price_mc.volume,
+        "Price Change %":Price_mc.price_change_percent
+
+        })
+
+    plt.show()
+    
+    corr_Price_df= ccPrice_df.corr(method='pearson')
+    #print(corr_Price_df.head())
+
+    plt.figure(figsize=(10,8))
+    Price_df_lt = corr_Price_df.where(np.tril(np.ones(corr_Price_df.shape)).astype(bool))
+    sns.heatmap(Price_df_lt,cmap="coolwarm",annot=True,fmt='.1g')
+    plt.tight_layout()
+
+    plt.show()
+
+#   Outline of New CCA:
+#   For the top 50 most mentioned stocks:
+#   For Twitter, Reddit, and Combined:
+#   Random sample (Or exhaustive, permitting) using days & weeks of sentiment/price change
 
 #   Runs through price change and sentiment data for a given stock, will be done for the top most mentioned stocks
 #   Outline of new DF:
 #   stock, date, compound_scores, total_posts, price_change_dollars, price_change_percent
 #   OTHER NOTES
     #   Try with negative_posts, neutral_posts, positive_posts, volume, etc.
-def createDF(stock):
-    StockList, DateList, CompoundScoreList, TotalPostList, PriceChangeDollarsList, PriceChangePercentList = [], [], [], [], [], []
-    SentimentData = {}
+def createTop50DF():
+    Top50Stocks = ['BTC', 'TSLA', 'ETH', 'GME', 'TWTR', 'AAPL', 'FB', 'AMZN', 'NFLX', 'NVDA', 'AMD', 'NIO', 'BABA', 'PLTR', 'MSFT', 'ROKU', 'PYPL', 'DKNG', 'UPST', 'MRNA', 'SQ', 'GOOGL', 'TLRY', 'GOOG', 'WMT', 'TGT', 'PTON', 'TDOC', 'XOM', 'UBER', 'JPM', 'BAC', 'SE', 'CVX', 'ZM', 'BYND', 'SBUX', 'OXY', 'ABNB', 'INTC', 'HYMC', 'BBBY', 'MU', 'TWLO', 'LYFT', 'LMT', 'FUBO', 'GM', 'JD', 'ETSY']
+    StockList, DateList, RedditNegativePostList, RedditNeutralPostList, RedditPositivePostList, RedditNegativeScoreList, RedditNeutralScoreList, RedditPositiveScoreList, RedditCompoundScoreList, RedditTotalPostList, RedditSentimentChangeList, TwitterNegativePostList, TwitterNeutralPostList, TwitterPositivePostList, TwitterNegativeScoreList, TwitterNeutralScoreList, TwitterPositiveScoreList, TwitterCompoundScoreList, TwitterTotalPostList, TwitterSentimentChangeList, OpenCostList, CloseCostList, AdjCloseCostList, HighCostList, LowCostList, VolumeList, PriceChangePercentList = [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []
+
+    SentimentData = {"reddit": {}, "twitter": {}}
     PriceData = {}
+    Dates = []
+    prevSentiment = {'reddit': {}, 'twitter': {}}
 
     folderList = ["/Users/tymar/OneDrive/Documents/Capstone/Reddit/Sentiment Scores/", "/Users/tymar/OneDrive/Documents/Capstone/Twitter/Sentiment Scores/"]
     for folderName in folderList:
         for path in Path(folderName).iterdir():
             date = str(dparser.parse(str(path),fuzzy=True).date())
+            Dates.append(date)
             with open(path, newline='') as csvFile:
                 sentimentCSVReader = csv.reader(csvFile, delimiter=',')
                 next(sentimentCSVReader)
                 for row in sentimentCSVReader:
                     if row != []:
-                        SentimentData[date] = {
-                            'negative_score': row[3],
-                            'neutral_score': row[4],
-                            'positive_score': row[5],
-                            'comp_scores': row[6],
-                            'negative_posts': row[7],
-                            'neutral_posts': row[8],
-                            'positive_posts': row[9],
-                            'total_posts': row[10]
-                            }
-                csvFile.close()
+                        source = row[0]
+                        stock = row[2]
+                        sentimentChange = 0
+                        if (stock in Top50Stocks):             
+                            currentSentiment = float(row[6])
+                            if not stock in prevSentiment[source]:
+                                sentimentChange = 0
+                            else:
+                                sentimentChange = currentSentiment-prevSentiment[source][stock]
 
-    startDate = min(SentimentData.keys())
+                            prevSentiment[source][stock] = currentSentiment
+                
+                            if not date in SentimentData[source]:
+                                SentimentData[source][date] = {}
+                            SentimentData[source][date][stock] = {
+                                'stock': stock,
+                                'negative_score': row[3],
+                                'neutral_score': row[4],
+                                'positive_score': row[5],
+                                'comp_score': currentSentiment,
+                                'negative_posts': row[7],
+                                'neutral_posts': row[8],
+                                'positive_posts': row[9],
+                                'total_posts': row[10],
+                                'sentiment_change': sentimentChange
+                                }
+                csvFile.close() 
     
+    startDate = min(Dates)
+
     #   Converts the oldest date in sentiment dictionary to a datetime in order to use time delta to subtract dates.
     startDateTime = datetime.strptime(startDate, '%Y-%m-%d')
     startDate = startDateTime - timedelta(days=5)
-    
-    endDate = max(SentimentData.keys()) 
-    data = yf.download(stock, start=startDate, end=endDate)
-    data['ticker'] = stock  # add this column because the dataframe doesn't contain a column with the ticker
-    prevPrice = 0
-    for row in data.itertuples():
-        #print("Prev Price: " + str(prevPrice))
-        #print("Current Price: " + str(row.Close))
+    endDate = max(Dates) 
 
-        date = row.Index.strftime("%Y-%m-%d")
+    data = yf.download(Top50Stocks, start=startDate, end=endDate)
+    prevPrice = {}
 
-        priceChange = row.Close - prevPrice
-        priceChangePercent = 100*((row.Close-prevPrice)/float(row.Close))
-        #print("Price Change: " + str(priceChange))
-        #print("Price Change %: " + str(priceChangePercent))
-        prevPrice = row.Close
-  
-        PriceData[date] = {
-            'open': row.Open,
-            'close': row.Close,
-            'volume': row.Volume,
-            'price_change_dollars': priceChange,
-            'price_change_percent': priceChangePercent
-            }
 
-    sentimentSet = set(SentimentData.keys())
-    priceSet = set(PriceData.keys())
 
-    for date in sentimentSet.intersection(priceSet):
-        StockList.append(stock)
-        DateList.append(date)
-        CompoundScoreList.append(float(SentimentData[date]['comp_scores']))
-        TotalPostList.append(float(SentimentData[date]['total_posts']))
-        PriceChangeDollarsList.append(float(PriceData[date]['price_change_dollars']))
-        PriceChangePercentList.append(float(PriceData[date]['price_change_percent']))
+    for source in SentimentData:
+        for date in SentimentData[source]:
+            date_time = datetime.strptime(date, '%Y-%m-%d')
+
+            for stock in SentimentData[source][date]:
+                priceChangePercent = 0
+                currentPrice = 0
+                try:
+                    currentPrice = float(data["Adj Close"][stock][date_time])
+                except:
+                    continue
+            
+                if not stock in prevPrice:
+                    priceChangePercent = 0
+                else:
+                    priceChangePercent = 100*((currentPrice-prevPrice[stock])/currentPrice)
+
+                prevPrice[stock] = currentPrice
+                
+                if not date in PriceData:
+                    PriceData[date] = {}
+                try:
+                    PriceData[date][stock] = {
+                        "stock": stock,
+                        "open": data["Open"][stock][date_time],
+                        "close": data["Close"][stock][date_time],
+                        "adj_close": data["Adj Close"][stock][date_time],
+                        "high": data["High"][stock][date_time],
+                        "low": data["Low"][stock][date_time],
+                        "volume": data["Volume"][stock][date_time],
+                        "price_change_percent": priceChangePercent
+                        }
+                except Exception:
+                    pass
+
+
+    sentimentRedditDateSet = set(SentimentData["reddit"].keys())
+    sentimentTwitterDateSet = set(SentimentData["twitter"].keys())
+    priceDateSet = set(PriceData.keys())
+
+    for date in priceDateSet.intersection(sentimentRedditDateSet, sentimentTwitterDateSet):
+        sentimentRedditStockSet = set(SentimentData["reddit"][date].keys())
+        sentimentTwitterStockSet = set(SentimentData["twitter"][date].keys())
+        priceStockSet = set(PriceData[date].keys())
+
+        for stock in priceStockSet.intersection(sentimentRedditStockSet, sentimentTwitterStockSet):
+
+            StockList.append(stock)
+            DateList.append(date)
+            RedditNegativePostList.append(float(SentimentData["reddit"][date][stock]['negative_posts']))
+            RedditNeutralPostList.append(float(SentimentData["reddit"][date][stock]['neutral_posts']))
+            RedditPositivePostList.append(float(SentimentData["reddit"][date][stock]['positive_posts']))
+            RedditNegativeScoreList.append(float(SentimentData["reddit"][date][stock]['negative_score']))
+            RedditNeutralScoreList.append(float(SentimentData["reddit"][date][stock]['neutral_score']))
+            RedditPositiveScoreList.append(float(SentimentData["reddit"][date][stock]['positive_score']))
+            RedditCompoundScoreList.append(float(SentimentData["reddit"][date][stock]['comp_score']))
+            RedditTotalPostList.append(float(SentimentData["reddit"][date][stock]['total_posts']))
+            RedditSentimentChangeList.append(float(SentimentData["reddit"][date][stock]['sentiment_change']))
+
+            TwitterNegativePostList.append(float(SentimentData["twitter"][date][stock]['negative_posts']))
+            TwitterNeutralPostList.append(float(SentimentData["twitter"][date][stock]['neutral_posts']))
+            TwitterPositivePostList.append(float(SentimentData["twitter"][date][stock]['positive_posts']))
+            TwitterNegativeScoreList.append(float(SentimentData["twitter"][date][stock]['negative_score']))
+            TwitterNeutralScoreList.append(float(SentimentData["twitter"][date][stock]['neutral_score']))
+            TwitterPositiveScoreList.append(float(SentimentData["twitter"][date][stock]['positive_score']))
+            TwitterCompoundScoreList.append(float(SentimentData["twitter"][date][stock]['comp_score']))
+            TwitterTotalPostList.append(float(SentimentData["twitter"][date][stock]['total_posts']))
+            TwitterSentimentChangeList.append(float(SentimentData["twitter"][date][stock]['sentiment_change']))
+
+            OpenCostList.append(float(PriceData[date][stock]['open']))
+            CloseCostList.append(float(PriceData[date][stock]['close']))
+            AdjCloseCostList.append(float(PriceData[date][stock]['adj_close']))
+            HighCostList.append(float(PriceData[date][stock]['high']))
+            LowCostList.append(float(PriceData[date][stock]['low']))
+            VolumeList.append(float(PriceData[date][stock]['volume']))
+            PriceChangePercentList.append(float(PriceData[date][stock]['price_change_percent']))
+
     data = {
-        "stock": StockList,
         "date": DateList,
-        "comp_scores": CompoundScoreList, 
-        "total_posts": TotalPostList, 
-        "price_change_dollars": PriceChangeDollarsList,
+        "stock": StockList,
+        "reddit_negative_posts": RedditNegativePostList,
+        "reddit_neutral_posts": RedditNeutralPostList,
+        "reddit_positive_posts": RedditPositivePostList,
+        "reddit_negative_score": RedditNegativeScoreList,
+        "reddit_neutral_score": RedditNeutralScoreList,
+        "reddit_positive_score": RedditPositiveScoreList,
+        "reddit_comp_score": RedditCompoundScoreList, 
+        "reddit_total_posts": RedditTotalPostList,
+        "reddit_sentiment_change": RedditSentimentChangeList,
+
+        "twitter_negative_posts": TwitterNegativePostList,
+        "twitter_neutral_posts": TwitterNeutralPostList,
+        "twitter_positive_posts": TwitterPositivePostList,
+        "twitter_negative_score": TwitterNegativeScoreList,
+        "twitter_neutral_score": TwitterNeutralScoreList,
+        "twitter_positive_score": TwitterPositiveScoreList,
+        "twitter_comp_score": TwitterCompoundScoreList, 
+        "twitter_total_posts": TwitterTotalPostList,
+        "twitter_sentiment_change": TwitterSentimentChangeList,
+        
+        "open": OpenCostList,
+        "close": CloseCostList,
+        "adj_close": AdjCloseCostList,
+        "high": HighCostList,
+        "low": LowCostList,
+        "volume": VolumeList,
         "price_change_percent": PriceChangePercentList
         }   
+    
+
     df = pd.DataFrame(data)
+
+    print(df.to_string())
+    df = df.dropna()
+    df.to_csv('top50DF.csv')
     return df
 
+def readTop50DF():
+    return pd.read_csv('top50DF.csv')
+
 if __name__ == '__main__':
-    #example()
-    StockTool()
+    #df = createTop50DF()
+    df = readTop50DF()
+    StockTool(df)
