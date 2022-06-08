@@ -1,4 +1,0 @@
-This is the code for the database for the stock tool
-The database is not currently in use
-The database will be used in the future if the size of the files for the tweets and reddit posts becomes too large
-Mysql connectors were previously in place, so the files still exist if necessary, but will need to be updated.
