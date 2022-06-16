@@ -1,36 +1,20 @@
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
+
 import datetime
 
-import mysql.connector
-from mysql.connector.constants import ClientFlag
+import mysql.connector as mysql
+import sys
+
+HOST = "35.222.225.4" 
+SENTIMENTDB = "Sentiment_DB"
+POSTDB = "Posts_DB"
+USER = "root"
+PASSWORD = "sentimentdata"
+
+sentimentConn = mysql.connect(user=USER, password=PASSWORD, host=HOST, database=SENTIMENTDB)
+postConn = mysql.connect(user=USER, password=PASSWORD, host=HOST, database=POSTDB)
 
 TODAY = datetime.date.today()
-
-config1 = {
-    'user': 'root',
-    'password': 'sentimentdata',
-    'host': '35.222.225.4',
-    'client_flags': [ClientFlag.SSL],
-    'ssl_ca': 'ssl/server-ca.pem',
-    'ssl_cert': 'ssl/client-cert.pem',
-    'ssl_key': 'ssl/client-key.pem',
-    'database': 'Posts_DB'
-}
-# now we establish our connection
-postConn = mysql.connector.connect(**config1)
-
-config2 = {
-    'user': 'root',
-    'password': 'sentimentdata',
-    'host': '35.222.225.4',
-    'client_flags': [ClientFlag.SSL],
-    'ssl_ca': 'ssl/server-ca.pem',
-    'ssl_cert': 'ssl/client-cert.pem',
-    'ssl_key': 'ssl/client-key.pem',
-    'database': 'Sentiment_DB'
-}
-# now we establish our connection
-sentimentConn = mysql.connector.connect(**config2)
 
 # adding wsb/reddit flavour to vader to improve sentiment analysis, score: 4.0 to -4.0
 new_words = {
@@ -239,7 +223,8 @@ def gather_posts_from_db():
         return Posts
     except Exception:
         createNewConnection()
-        gather_posts_from_db()
+        Posts = gather_posts_from_db()
+        return Posts
     
 
 def insert_sentiment_score_to_db(date, stock, neg, neu, pos, compound, numNeg, numNeu, numPos, numTot):					       
@@ -284,10 +269,7 @@ def processTweetText(tweet, stock):
 
 def createNewConnection():
     global postConn, sentimentConn
-    postConn = mysql.connector.connect(**config1)
-    sentimentConn = mysql.connector.connect(**config2)
- 
-if __name__ == '__main__':
-    TODAY = datetime.date.today()
-    tw = TwitterSentiment()
-    tw.run_for_date(TODAY)
+    sentimentConn = mysql.connect(user=USER, password=PASSWORD, host=HOST, database=SENTIMENTDB)
+    postConn = mysql.connect(user=USER, password=PASSWORD, host=HOST, database=POSTDB)
+
+
