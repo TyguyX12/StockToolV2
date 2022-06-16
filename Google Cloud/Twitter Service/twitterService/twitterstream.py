@@ -2,24 +2,18 @@
 import tweepy
 import datetime
 
-import mysql.connector
-from mysql.connector.constants import ClientFlag
+import mysql.connector as mysql
+import sys
 
-StocksToSearch = ['$TSLA', '$GME', '$FB', '$NVDA', '$AMD', '$AAPL', '$TWTR', '$AMZN', '$NFLX', '$BABA', '$PLTR', '$TLRY', '$MSFT', '$MMS', '$GOOGL', '$GOOG', '$BBBY', '$ZM', '$ROKU', '$TDOC', '$BBY', '$TGT', '$UPST', '$RH', '$FDS', '$PYPL', '$NIO', '$SQ', '$WMT', '$SPCE', '$HMHC', '$DKNG', '$BYND', '$XOM', '$ROST', '$CRM', '$LULU', '$UBER', '$LYFT', '$JPM', '$DTE', '$COKE', '$ABNB', '$PANW', '$PTON', '$ETSY', '$SU', '$INTC', '$CSCO', '$OXY', '$KSS', '$JWN', '$BP', '$LMT', '$LUNA', '$MU', '$SBUX', '$HD', '$CCS', '$CRSR', '$BTC', '$MRNA', '$VIAC', '$CVNA', '$EBAY', '$RKT', '$SP', '$ANF', '$TSM', '$BAC', '$MCD', '$NYC', '$ULTA', '$EA', '$DOCU', '$GM', '$AAP', '$EGO', '$CLF', '$JD', '$MSM', '$CHWY', '$CVX', '$AMAT', '$NKLA', '$EL', '$COP', '$QCOM', '$SE', '$DKS', '$HYMC', '$QS', '$OFC', '$LE', '$FUBO', '$SAVA', '$MTCH', '$TWLO', '$CHGG', '$CMG', '$MSTR', '$GE', '$CVS', '$ABT', '$SIRI', '$INTU', '$ADP', '$CGC', '$IBKR', '$SAN', '$GS', '$ETH', '$CRSP', '$AZZ', '$FSD', '$AL', '$CRWD', '$III', '$TTWO', '$SNP', '$RL', '$NBA', '$VZ', '$AB', '$LI', '$SPR', '$BLK', '$AAL', '$MARA', '$DEN', '$CS', '$FSLY', '$UAL', '$SDC', '$ATVI', '$FSR', '$URBN', '$DG', '$WDAY', '$CB', '$AC', '$PING', '$NKE', '$NOK', '$ACB', '$SI', '$WFC', '$UNH', '$OKTA', '$MSCI', '$FN', '$SHO', '$BAK', '$EFF', '$MMM', '$LNG', '$DK', '$IBM', '$TTD', '$CROX', '$RTX', '$MVIS']
+HOST = "35.222.225.4" 
+POSTDB = "Posts_DB"
+USER = "root"
+PASSWORD = "sentimentdata"
 
-config = {
-    'user': 'root',
-    'password': 'sentimentdata',
-    'host': '35.222.225.4',
-    'client_flags': [ClientFlag.SSL],
-    'ssl_ca': 'twitterService/ssl/server-ca.pem',
-    'ssl_cert': 'twitterService/ssl/client-cert.pem',
-    'ssl_key': 'twitterService/ssl/client-key.pem',
-    'database': 'Posts_DB'
-}
+conn = mysql.connect(user=USER, password=PASSWORD, host=HOST, database=POSTDB)
 
-# now we establish our connection
-conn = mysql.connector.connect(**config)
+StocksToSearch = ['$TSLA', '$GME', '$FB', '$NVDA', '$AMD', '$AAPL', '$TWTR', '$AMZN', '$NFLX', '$BABA', '$PLTR', '$TLRY', '$MSFT', '$MMS', '$GOOGL', '$GOOG', '$BBBY', '$ZM', '$ROKU', '$TDOC', '$BBY', '$TGT', '$UPST', '$RH', '$FDS', '$PYPL', '$NIO', '$SQ', '$WMT', '$SPCE', '$HMHC', '$DKNG', '$BYND', '$XOM', '$ROST', '$CRM', '$LULU', '$UBER', '$LYFT', '$JPM', '$DTE', '$COKE', '$ABNB', '$PANW', '$PTON', '$ETSY', '$SU', '$INTC', '$CSCO', '$OXY', '$KSS', '$JWN', '$BP', '$LMT', '$LUNA', '$MU', '$SBUX', '$HD', '$CCS', '$CRSR', '$BTC', '$MRNA', '$VIAC', '$CVNA', '$EBAY', '$RKT', '$SP', '$ANF', '$TSM', '$BAC', '$MCD', '$NYC', '$ULTA', '$EA', '$DOCU', '$GM', '$AAP', '$EGO', '$CLF', '$JD', '$MSM', '$CHWY', '$CVX', '$AMAT', '$NKLA', '$EL', '$COP', '$QCOM', '$SE', '$DKS', '$HYMC', '$QS', '$OFC', '$LE', '$FUBO', '$SAVA', '$MTCH', '$TWLO', '$CHGG', '$CMG', '$MSTR', '$GE', '$CVS', '$ABT', '$SIRI', '$INTU', '$ADP', '$CGC', '$IBKR', '$SAN', '$GS', '$ETH', '$CRSP', '$AZZ', '$FSD', '$AL', '$CRWD', '$III', '$TTWO', '$SNP', '$RL', '$NBA', '$VZ', '$AB', '$LI', '$SPR', '$BLK', '$AAL', '$MARA', '$DEN', '$CS', '$FSLY', '$UAL', '$SDC', '$ATVI', '$FSR', '$URBN', '$DG', '$WDAY', '$CB', '$NKE', '$NOK', '$ACB', '$SI', '$WFC', '$UNH', '$OKTA', '$MSCI', '$FN', '$SHO', '$BAK', '$EFF', '$MMM', '$LNG', '$DK', '$IBM', '$TTD', '$CROX', '$RTX', '$MVIS']
+
 
 def start_live_listener():
     '''
@@ -91,9 +85,7 @@ def insert_tweet_to_db(stock, tweetText):
 
 def createNewConnection():
     global conn
-    conn = mysql.connector.connect(**config)
+    conn = mysql.connect(user=USER, password=PASSWORD, host=HOST, database=POSTDB)
 
-
-#start_live_listener()
 
 

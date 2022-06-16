@@ -1,8 +1,8 @@
 # Python image to use.
 FROM python:3.8
 
-# Set the working directory to /app
-WORKDIR /app
+# Set the working directory to /main
+WORKDIR /main
 
 # copy the requirements file used for dependencies
 COPY requirements.txt .
@@ -14,5 +14,5 @@ RUN pip install --trusted-host pypi.python.org -r requirements.txt
 # Copy the rest of the working directory contents into the container at /app
 COPY . .
 
-# Run app.py when the container launches
-ENTRYPOINT ["python", "app.py"]
+# Run main.py when the container launches
+ENTRYPOINT ["python", "main.py"]
