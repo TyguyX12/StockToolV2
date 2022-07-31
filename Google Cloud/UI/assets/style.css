@@ -1,0 +1,154 @@
+
+.nav-header {
+    font-size: xx-large;
+    font-weight: bolder;
+}
+.nav-item {
+    font-size: larger;
+    font-weight:700;
+    margin:5px;
+}
+.sentiment-table-row {
+    font-size:18px;
+}
+
+.dash-dropdown {
+    font-size: 14px;
+}
+.add-portfolio-div {
+    display:flex;
+    column-gap:1em;
+    margin-left:auto;
+}
+
+
+.edit-portfolio-footer {
+    margin-left:auto;
+    column-gap:1em;
+}
+
+.graph-dropdowns {
+    display:flex;
+    justify-content: center;
+    column-gap:2vw
+}
+
+.small-dropdown {
+    width: 10vw;
+}
+
+.medium-dropdown {
+    width: 20vw;
+}
+
+.large-dropdown {
+    width: 30vw;
+}
+.homepage-chart {
+    height: auto;
+    width: auto;
+    border: 1px solid rgba(0,0,0,.125)
+}
+
+.tab {
+    border-bottom: 1px solid #d6d6d6 !important;
+    font-size: large !important;
+    font-weight: bold !important;
+}
+.selected-tab {
+    border-top: 1px solid #d6d6d6 !important;
+    border-bottom: 1px solid #d6d6d6 !important;
+    background-color: rgb(252, 73, 97) !important;
+    color: white !important;
+}
+.table-header {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+tr {
+    padding: 1vw;
+    vertical-align: middle;
+    text-align: center;
+}
+
+td > div {
+    display: flex;
+    vertical-align: middle;
+    justify-content: center;
+    text-align: center;
+    padding:1vw;
+}
+th > div {
+    display: flex;
+    vertical-align: middle;
+    justify-content: center;
+    text-align: center;
+    font-weight: 500;
+}
+.wide {
+    width: 80vw;
+    margin: auto;
+}
+
+.vertical-flex-div{
+    row-gap: 1vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.horizontal-flex-div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    column-gap: 1vw;
+}
+
+.btn {
+    background-color: rgb(252, 73, 97);
+    border-color: rgb(220, 50, 75);
+}
+
+.btn:hover, .btn:visited, .btn:active, .btn:focus {
+    background-color: rgb(220, 50, 75);
+    border-color: rgb(200, 30, 60);
+}
+
+.input {
+    padding-left: 1vw;
+    padding-right: 1vw;
+    font-size:14px !important;
+}
+
+.centered-div {
+    margin: auto;
+}
+
+.line {
+    height: 2px;
+    background-color: darkgray;
+}
+
+
+ul {
+    list-style: none;
+    margin-bottom: 5%;
+}
+
+li {
+    height: 20px;
+    padding: 2px 0;
+    display: grid;
+    align-items: center;
+}
+
+H1 {
+    font-weight: bolder;
+    margin-top: 0px;
+    text-align: center;
+}
+
+H2 {
+    margin-top: 0px;
+    text-align: center;
+}
