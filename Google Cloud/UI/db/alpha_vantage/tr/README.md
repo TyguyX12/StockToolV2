@@ -1,0 +1,1 @@
+Traditional stocks stored here
