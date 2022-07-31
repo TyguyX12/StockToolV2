@@ -1,0 +1,19 @@
+{
+    "alpha_vantage": {
+        "types": [
+            "tr", 
+            "fx", 
+            "cc"
+        ],
+        "key": "ALPHA_VANTAGE_API_KEY",
+        "oauth_info": null
+       },
+    "yahoo_finance": {
+        "types": [
+            "tr", 
+            "fx"
+        ],
+        "key": "public",
+        "oauth_info": null
+        }
+}

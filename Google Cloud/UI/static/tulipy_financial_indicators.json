@@ -1,0 +1,1138 @@
+{
+    "ad": {
+        "full_name": "Accumulation/Distribution Line",
+        "type": "indicator",
+        "inputs": [
+            "high",
+            "low",
+            "close",
+            "volume"
+        ],
+        "options": [],
+        "outputs": [
+            "ad"
+        ],
+        "defaults": null
+    },
+    "adosc": {
+        "full_name": "Accumulation/Distribution Oscillator",
+        "type": "indicator",
+        "inputs": [
+            "high",
+            "low",
+            "close",
+            "volume"
+        ],
+        "options": [
+            "short period",
+            "long period"
+        ],
+        "outputs": [
+            "adosc"
+        ],
+        "defaults": [
+            2.0,
+            5.0
+        ]
+    },
+    "adx": {
+        "full_name": "Average Directional Movement Index",
+        "type": "indicator",
+        "inputs": [
+            "high",
+            "low",
+            "close"
+        ],
+        "options": [
+            "period"
+        ],
+        "outputs": [
+            "dx"
+        ],
+        "defaults": [
+            5.0
+        ]
+    },
+    "adxr": {
+        "full_name": "Average Directional Movement Rating",
+        "type": "indicator",
+        "inputs": [
+            "high",
+            "low",
+            "close"
+        ],
+        "options": [
+            "period"
+        ],
+        "outputs": [
+            "dx"
+        ],
+        "defaults": [
+            5.0
+        ]
+    },
+    "ao": {
+        "full_name": "Awesome Oscillator",
+        "type": "indicator",
+        "inputs": [
+            "high",
+            "low"
+        ],
+        "options": [],
+        "outputs": [
+            "ao"
+        ],
+        "defaults": null
+    },
+    "apo": {
+        "full_name": "Absolute Price Oscillator",
+        "type": "indicator",
+        "inputs": [
+            "real"
+        ],
+        "options": [
+            "short period",
+            "long period"
+        ],
+        "outputs": [
+            "apo"
+        ],
+        "defaults": [
+            2.0,
+            5.0
+        ]
+    },
+    "aroon": {
+        "full_name": "Aroon",
+        "type": "indicator",
+        "inputs": [
+            "high",
+            "low"
+        ],
+        "options": [
+            "period"
+        ],
+        "outputs": [
+            "aroon_down",
+            "aroon_up"
+        ],
+        "defaults": [
+            5.0
+        ]
+    },
+    "aroonosc": {
+        "full_name": "Aroon Oscillator",
+        "type": "indicator",
+        "inputs": [
+            "high",
+            "low"
+        ],
+        "options": [
+            "period"
+        ],
+        "outputs": [
+            "aroonosc"
+        ],
+        "defaults": [
+            5.0
+        ]
+    },
+    "atr": {
+        "full_name": "Average True Range",
+        "type": "indicator",
+        "inputs": [
+            "high",
+            "low",
+            "close"
+        ],
+        "options": [
+            "period"
+        ],
+        "outputs": [
+            "atr"
+        ],
+        "defaults": [
+            5.0
+        ]
+    },
+    "avgprice": {
+        "full_name": "Average Price",
+        "type": "overlay",
+        "inputs": [
+            "open",
+            "high",
+            "low",
+            "close"
+        ],
+        "options": [],
+        "outputs": [
+            "avgprice"
+        ],
+        "defaults": null
+    },
+    "bbands": {
+        "full_name": "Bollinger Bands",
+        "type": "overlay",
+        "inputs": [
+            "real"
+        ],
+        "options": [
+            "period",
+            "stddev"
+        ],
+        "outputs": [
+            "bbands_lower",
+            "bbands_middle",
+            "bbands_upper"
+        ],
+        "defaults": [
+            5.0,
+            2.0
+        ]
+    },
+    "bop": {
+        "full_name": "Balance of Power",
+        "type": "indicator",
+        "inputs": [
+            "open",
+            "high",
+            "low",
+            "close"
+        ],
+        "options": [],
+        "outputs": [
+            "bop"
+        ],
+        "defaults": null
+    },
+    "cci": {
+        "full_name": "Commodity Channel Index",
+        "type": "indicator",
+        "inputs": [
+            "high",
+            "low",
+            "close"
+        ],
+        "options": [
+            "period"
+        ],
+        "outputs": [
+            "cci"
+        ],
+        "defaults": [
+            5.0
+        ]
+    },
+    "cmo": {
+        "full_name": "Chande Momentum Oscillator",
+        "type": "indicator",
+        "inputs": [
+            "real"
+        ],
+        "options": [
+            "period"
+        ],
+        "outputs": [
+            "cmo"
+        ],
+        "defaults": [
+            5.0
+        ]
+    },
+    "cvi": {
+        "full_name": "Chaikins Volatility",
+        "type": "indicator",
+        "inputs": [
+            "high",
+            "low"
+        ],
+        "options": [
+            "period"
+        ],
+        "outputs": [
+            "cvi"
+        ],
+        "defaults": [
+            5.0
+        ]
+    },
+    "dema": {
+        "full_name": "Double Exponential Moving Average",
+        "type": "overlay",
+        "inputs": [
+            "real"
+        ],
+        "options": [
+            "period"
+        ],
+        "outputs": [
+            "dema"
+        ],
+        "defaults": [
+            5.0
+        ]
+    },
+    "di": {
+        "full_name": "Directional Indicator",
+        "type": "indicator",
+        "inputs": [
+            "high",
+            "low",
+            "close"
+        ],
+        "options": [
+            "period"
+        ],
+        "outputs": [
+            "plus_di",
+            "minus_di"
+        ],
+        "defaults": [
+            5.0
+        ]
+    },
+    "dm": {
+        "full_name": "Directional Movement",
+        "type": "indicator",
+        "inputs": [
+            "high",
+            "low"
+        ],
+        "options": [
+            "period"
+        ],
+        "outputs": [
+            "plus_dm",
+            "minus_dm"
+        ],
+        "defaults": [
+            5.0
+        ]
+    },
+    "dpo": {
+        "full_name": "Detrended Price Oscillator",
+        "type": "indicator",
+        "inputs": [
+            "real"
+        ],
+        "options": [
+            "period"
+        ],
+        "outputs": [
+            "dpo"
+        ],
+        "defaults": [
+            5.0
+        ]
+    },
+    "dx": {
+        "full_name": "Directional Movement Index",
+        "type": "indicator",
+        "inputs": [
+            "high",
+            "low",
+            "close"
+        ],
+        "options": [
+            "period"
+        ],
+        "outputs": [
+            "dx"
+        ],
+        "defaults": [
+            5.0
+        ]
+    },
+    "ema": {
+        "full_name": "Exponential Moving Average",
+        "type": "overlay",
+        "inputs": [
+            "real"
+        ],
+        "options": [
+            "period"
+        ],
+        "outputs": [
+            "ema"
+        ],
+        "defaults": [
+            5.0
+        ]
+    },
+    "emv": {
+        "full_name": "Ease of Movement",
+        "type": "indicator",
+        "inputs": [
+            "high",
+            "low",
+            "volume"
+        ],
+        "options": [],
+        "outputs": [
+            "emv"
+        ],
+        "defaults": null
+    },
+    "fisher": {
+        "full_name": "Fisher Transform",
+        "type": "indicator",
+        "inputs": [
+            "high",
+            "low"
+        ],
+        "options": [
+            "period"
+        ],
+        "outputs": [
+            "fisher",
+            "fisher_signal"
+        ],
+        "defaults": [
+            5.0
+        ]
+    },
+    "fosc": {
+        "full_name": "Forecast Oscillator",
+        "type": "indicator",
+        "inputs": [
+            "real"
+        ],
+        "options": [
+            "period"
+        ],
+        "outputs": [
+            "fosc"
+        ],
+        "defaults": [
+            5.0
+        ]
+    },
+    "hma": {
+        "full_name": "Hull Moving Average",
+        "type": "overlay",
+        "inputs": [
+            "real"
+        ],
+        "options": [
+            "period"
+        ],
+        "outputs": [
+            "hma"
+        ],
+        "defaults": [
+            5.0
+        ]
+    },
+    "kama": {
+        "full_name": "Kaufman Adaptive Moving Average",
+        "type": "overlay",
+        "inputs": [
+            "real"
+        ],
+        "options": [
+            "period"
+        ],
+        "outputs": [
+            "kama"
+        ],
+        "defaults": [
+            5.0
+        ]
+    },
+    "kvo": {
+        "full_name": "Klinger Volume Oscillator",
+        "type": "indicator",
+        "inputs": [
+            "high",
+            "low",
+            "close",
+            "volume"
+        ],
+        "options": [
+            "short period",
+            "long period"
+        ],
+        "outputs": [
+            "kvo"
+        ],
+        "defaults": [
+            2.0,
+            5.0
+        ]
+    },
+    "linreg": {
+        "full_name": "Linear Regression",
+        "type": "overlay",
+        "inputs": [
+            "real"
+        ],
+        "options": [
+            "period"
+        ],
+        "outputs": [
+            "linreg"
+        ],
+        "defaults": [
+            5.0
+        ]
+    },
+    "linregintercept": {
+        "full_name": "Linear Regression Intercept",
+        "type": "indicator",
+        "inputs": [
+            "real"
+        ],
+        "options": [
+            "period"
+        ],
+        "outputs": [
+            "linregintercept"
+        ],
+        "defaults": [
+            5.0
+        ]
+    },
+    "linregslope": {
+        "full_name": "Linear Regression Slope",
+        "type": "indicator",
+        "inputs": [
+            "real"
+        ],
+        "options": [
+            "period"
+        ],
+        "outputs": [
+            "linregslope"
+        ],
+        "defaults": [
+            5.0
+        ]
+    },
+    "macd": {
+        "full_name": "Moving Average Convergence/Divergence",
+        "type": "indicator",
+        "inputs": [
+            "real"
+        ],
+        "options": [
+            "short period",
+            "long period",
+            "signal period"
+        ],
+        "outputs": [
+            "macd",
+            "macd_signal",
+            "macd_histogram"
+        ],
+        "defaults": [
+            2.0,
+            5.0,
+            9.0
+        ]
+    },
+    "marketfi": {
+        "full_name": "Market Facilitation Index",
+        "type": "indicator",
+        "inputs": [
+            "high",
+            "low",
+            "volume"
+        ],
+        "options": [],
+        "outputs": [
+            "marketfi"
+        ],
+        "defaults": null
+    },
+    "mass": {
+        "full_name": "Mass Index",
+        "type": "indicator",
+        "inputs": [
+            "high",
+            "low"
+        ],
+        "options": [
+            "period"
+        ],
+        "outputs": [
+            "mass"
+        ],
+        "defaults": [
+            5.0
+        ]
+    },
+    "medprice": {
+        "full_name": "Median Price",
+        "type": "overlay",
+        "inputs": [
+            "high",
+            "low"
+        ],
+        "options": [],
+        "outputs": [
+            "medprice"
+        ],
+        "defaults": null
+    },
+    "mfi": {
+        "full_name": "Money Flow Index",
+        "type": "indicator",
+        "inputs": [
+            "high",
+            "low",
+            "close",
+            "volume"
+        ],
+        "options": [
+            "period"
+        ],
+        "outputs": [
+            "mfi"
+        ],
+        "defaults": [
+            5.0
+        ]
+    },
+    "mom": {
+        "full_name": "Momentum",
+        "type": "indicator",
+        "inputs": [
+            "real"
+        ],
+        "options": [
+            "period"
+        ],
+        "outputs": [
+            "mom"
+        ],
+        "defaults": [
+            5.0
+        ]
+    },
+    "msw": {
+        "full_name": "Mesa Sine Wave",
+        "type": "indicator",
+        "inputs": [
+            "real"
+        ],
+        "options": [
+            "period"
+        ],
+        "outputs": [
+            "msw_sine",
+            "msw_lead"
+        ],
+        "defaults": [
+            5.0
+        ]
+    },
+    "natr": {
+        "full_name": "Normalized Average True Range",
+        "type": "indicator",
+        "inputs": [
+            "high",
+            "low",
+            "close"
+        ],
+        "options": [
+            "period"
+        ],
+        "outputs": [
+            "natr"
+        ],
+        "defaults": [
+            5.0
+        ]
+    },
+    "nvi": {
+        "full_name": "Negative Volume Index",
+        "type": "indicator",
+        "inputs": [
+            "close",
+            "volume"
+        ],
+        "options": [],
+        "outputs": [
+            "nvi"
+        ],
+        "defaults": null
+    },
+    "obv": {
+        "full_name": "On Balance Volume",
+        "type": "indicator",
+        "inputs": [
+            "close",
+            "volume"
+        ],
+        "options": [],
+        "outputs": [
+            "obv"
+        ],
+        "defaults": null
+    },
+    "ppo": {
+        "full_name": "Percentage Price Oscillator",
+        "type": "indicator",
+        "inputs": [
+            "real"
+        ],
+        "options": [
+            "short period",
+            "long period"
+        ],
+        "outputs": [
+            "ppo"
+        ],
+        "defaults": [
+            2.0,
+            5.0
+        ]
+    },
+    "psar": {
+        "full_name": "Parabolic SAR",
+        "type": "overlay",
+        "inputs": [
+            "high",
+            "low"
+        ],
+        "options": [
+            "acceleration factor step",
+            "acceleration factor maximum"
+        ],
+        "outputs": [
+            "psar"
+        ],
+        "defaults": [
+            0.2,
+            2.0
+        ]
+    },
+    "pvi": {
+        "full_name": "Positive Volume Index",
+        "type": "indicator",
+        "inputs": [
+            "close",
+            "volume"
+        ],
+        "options": [],
+        "outputs": [
+            "pvi"
+        ],
+        "defaults": null
+    },
+    "qstick": {
+        "full_name": "Qstick",
+        "type": "indicator",
+        "inputs": [
+            "open",
+            "close"
+        ],
+        "options": [
+            "period"
+        ],
+        "outputs": [
+            "qstick"
+        ],
+        "defaults": [
+            5.0
+        ]
+    },
+    "roc": {
+        "full_name": "Rate of Change",
+        "type": "indicator",
+        "inputs": [
+            "real"
+        ],
+        "options": [
+            "period"
+        ],
+        "outputs": [
+            "roc"
+        ],
+        "defaults": [
+            5.0
+        ]
+    },
+    "rocr": {
+        "full_name": "Rate of Change Ratio",
+        "type": "indicator",
+        "inputs": [
+            "real"
+        ],
+        "options": [
+            "period"
+        ],
+        "outputs": [
+            "rocr"
+        ],
+        "defaults": [
+            5.0
+        ]
+    },
+    "rsi": {
+        "full_name": "Relative Strength Index",
+        "type": "indicator",
+        "inputs": [
+            "real"
+        ],
+        "options": [
+            "period"
+        ],
+        "outputs": [
+            "rsi"
+        ],
+        "defaults": [
+            5.0
+        ]
+    },
+    "sma": {
+        "full_name": "Simple Moving Average",
+        "type": "overlay",
+        "inputs": [
+            "real"
+        ],
+        "options": [
+            "period"
+        ],
+        "outputs": [
+            "sma"
+        ],
+        "defaults": [
+            5.0
+        ]
+    },
+    "stoch": {
+        "full_name": "Stochastic Oscillator",
+        "type": "indicator",
+        "inputs": [
+            "high",
+            "low",
+            "close"
+        ],
+        "options": [
+            "%k period",
+            "%k slowing period",
+            "%d period"
+        ],
+        "outputs": [
+            "stoch_k",
+            "stoch_d"
+        ],
+        "defaults": [
+            5.0,
+            3.0,
+            3.0
+        ]
+    },
+    "stochrsi": {
+        "full_name": "Stochastic RSI",
+        "type": "indicator",
+        "inputs": [
+            "real"
+        ],
+        "options": [
+            "period"
+        ],
+        "outputs": [
+            "stochrsi"
+        ],
+        "defaults": [
+            5.0
+        ]
+    },
+    "tema": {
+        "full_name": "Triple Exponential Moving Average",
+        "type": "overlay",
+        "inputs": [
+            "real"
+        ],
+        "options": [
+            "period"
+        ],
+        "outputs": [
+            "tema"
+        ],
+        "defaults": [
+            5.0
+        ]
+    },
+    "tr": {
+        "full_name": "True Range",
+        "type": "indicator",
+        "inputs": [
+            "high",
+            "low",
+            "close"
+        ],
+        "options": [],
+        "outputs": [
+            "tr"
+        ],
+        "defaults": null
+    },
+    "trima": {
+        "full_name": "Triangular Moving Average",
+        "type": "overlay",
+        "inputs": [
+            "real"
+        ],
+        "options": [
+            "period"
+        ],
+        "outputs": [
+            "trima"
+        ],
+        "defaults": [
+            5.0
+        ]
+    },
+    "trix": {
+        "full_name": "Trix",
+        "type": "indicator",
+        "inputs": [
+            "real"
+        ],
+        "options": [
+            "period"
+        ],
+        "outputs": [
+            "trix"
+        ],
+        "defaults": [
+            5.0
+        ]
+    },
+    "tsf": {
+        "full_name": "Time Series Forecast",
+        "type": "overlay",
+        "inputs": [
+            "real"
+        ],
+        "options": [
+            "period"
+        ],
+        "outputs": [
+            "tsf"
+        ],
+        "defaults": [
+            5.0
+        ]
+    },
+    "typprice": {
+        "full_name": "Typical Price",
+        "type": "overlay",
+        "inputs": [
+            "high",
+            "low",
+            "close"
+        ],
+        "options": [],
+        "outputs": [
+            "typprice"
+        ],
+        "defaults": null
+    },
+    "ultosc": {
+        "full_name": "Ultimate Oscillator",
+        "type": "indicator",
+        "inputs": [
+            "high",
+            "low",
+            "close"
+        ],
+        "options": [
+            "short period",
+            "medium period",
+            "long period"
+        ],
+        "outputs": [
+            "ultosc"
+        ],
+        "defaults": [
+            2.0,
+            3.0,
+            5.0
+        ]
+    },
+    "vhf": {
+        "full_name": "Vertical Horizontal Filter",
+        "type": "indicator",
+        "inputs": [
+            "real"
+        ],
+        "options": [
+            "period"
+        ],
+        "outputs": [
+            "vhf"
+        ],
+        "defaults": [
+            5.0
+        ]
+    },
+    "vidya": {
+        "full_name": "Variable Index Dynamic Average",
+        "type": "overlay",
+        "inputs": [
+            "real"
+        ],
+        "options": [
+            "short period",
+            "long period",
+            "alpha"
+        ],
+        "outputs": [
+            "vidya"
+        ],
+        "defaults": [
+            2.0,
+            5.0,
+            0.2
+        ]
+    },
+    "volatility": {
+        "full_name": "Annualized Historical Volatility",
+        "type": "indicator",
+        "inputs": [
+            "real"
+        ],
+        "options": [
+            "period"
+        ],
+        "outputs": [
+            "volatility"
+        ],
+        "defaults": [
+            5.0
+        ]
+    },
+    "vosc": {
+        "full_name": "Volume Oscillator",
+        "type": "indicator",
+        "inputs": [
+            "volume"
+        ],
+        "options": [
+            "short period",
+            "long period"
+        ],
+        "outputs": [
+            "vosc"
+        ],
+        "defaults": [
+            2.0,
+            5.0
+        ]
+    },
+    "vwma": {
+        "full_name": "Volume Weighted Moving Average",
+        "type": "overlay",
+        "inputs": [
+            "close",
+            "volume"
+        ],
+        "options": [
+            "period"
+        ],
+        "outputs": [
+            "vwma"
+        ],
+        "defaults": [
+            5.0
+        ]
+    },
+    "wad": {
+        "full_name": "Williams Accumulation/Distribution",
+        "type": "indicator",
+        "inputs": [
+            "high",
+            "low",
+            "close"
+        ],
+        "options": [],
+        "outputs": [
+            "wad"
+        ],
+        "defaults": null
+    },
+    "wcprice": {
+        "full_name": "Weighted Close Price",
+        "type": "overlay",
+        "inputs": [
+            "high",
+            "low",
+            "close"
+        ],
+        "options": [],
+        "outputs": [
+            "wcprice"
+        ],
+        "defaults": null
+    },
+    "wilders": {
+        "full_name": "Wilders Smoothing",
+        "type": "overlay",
+        "inputs": [
+            "real"
+        ],
+        "options": [
+            "period"
+        ],
+        "outputs": [
+            "wilders"
+        ],
+        "defaults": [
+            5.0
+        ]
+    },
+    "willr": {
+        "full_name": "Williams %R",
+        "type": "indicator",
+        "inputs": [
+            "high",
+            "low",
+            "close"
+        ],
+        "options": [
+            "period"
+        ],
+        "outputs": [
+            "willr"
+        ],
+        "defaults": [
+            5.0
+        ]
+    },
+    "wma": {
+        "full_name": "Weighted Moving Average",
+        "type": "overlay",
+        "inputs": [
+            "real"
+        ],
+        "options": [
+            "period"
+        ],
+        "outputs": [
+            "wma"
+        ],
+        "defaults": [
+            5.0
+        ]
+    },
+    "zlema": {
+        "full_name": "Zero-Lag Exponential Moving Average",
+        "type": "overlay",
+        "inputs": [
+            "real"
+        ],
+        "options": [
+            "period"
+        ],
+        "outputs": [
+            "zlema"
+        ],
+        "defaults": [
+            5.0
+        ]
+    }
+}
