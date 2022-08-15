@@ -1,5 +1,0 @@
-tweepy
-mysql-connector-python
-datetime
-csv
-tkinter
